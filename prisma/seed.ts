@@ -1,8 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log('Seeding database...');
+
   const admin = await prisma.user.upsert({
     where: { email: 'admin@konica.com' },
     update: {},
@@ -10,10 +12,25 @@ async function main() {
       email: 'admin@konica.com',
       name: 'admin',
       password: 'admin',
+      role: Role.ADMIN,
     },
   });
 
-  console.log(admin);
+  const technician = await prisma.user.upsert({
+    where: { email: 'technician@konica.com' },
+    update: {},
+    create: {
+      email: 'technician@konica.com',
+      name: 'technician',
+      password: 'technician',
+      role: Role.TECHNICIAN,
+    },
+  });
+
+  console.log('Database seeded successfully!');
+
+  console.log('admin', admin);
+  console.log('technician', technician);
 }
 main()
   .then(async () => {
