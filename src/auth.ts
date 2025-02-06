@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import { AppRoutes, DEFAULT_REDIRECT, PUBLIC_ROUTES } from './routes';
 import { findUserByEmail } from './services/users.service';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -46,6 +47,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.role = token.role;
 
       return session;
+    },
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnPublicRoute = PUBLIC_ROUTES.includes(
+        nextUrl.pathname as AppRoutes,
+      );
+
+      if (!isOnPublicRoute) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL(DEFAULT_REDIRECT, nextUrl));
+      }
+
+      return true;
     },
   },
 });
