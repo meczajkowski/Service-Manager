@@ -20,20 +20,21 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DeviceModel } from '@prisma/client';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { addDeviceAction } from '../actions';
-import { newDeviceSchema } from '../schema';
+import { CreateDeviceSchema, createDeviceSchema } from '../schema';
 
 const NewDeviceForm = () => {
-  const form = useForm<z.infer<typeof newDeviceSchema>>({
-    resolver: zodResolver(newDeviceSchema),
+  const form = useForm<CreateDeviceSchema>({
+    resolver: zodResolver(createDeviceSchema),
+
     defaultValues: {
       model: DeviceModel.C224,
+
       serialNumber: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof newDeviceSchema>) {
+  async function onSubmit(values: CreateDeviceSchema) {
     console.log(values);
     await addDeviceAction({
       model: values.model,
