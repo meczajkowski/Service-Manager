@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Device, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/prisma';
 
 export const addDevice = async (device: Prisma.DeviceCreateInput) => {
@@ -15,4 +15,24 @@ export const getDevices = async () => {
     },
   });
   return devices;
+};
+
+export const getDeviceBySerialNumber = async (
+  serialNumber: Device['serialNumber'],
+) => {
+  const device = await prisma.device.findUnique({
+    where: { serialNumber },
+  });
+  return device;
+};
+
+export const updateDevice = async (
+  id: Device['id'],
+  device: Prisma.DeviceUpdateInput,
+) => {
+  const updatedDevice = await prisma.device.update({
+    where: { id },
+    data: device,
+  });
+  return updatedDevice;
 };

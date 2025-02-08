@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -7,6 +8,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Device } from '@prisma/client';
+import { Pencil } from 'lucide-react';
+import Link from 'next/link';
 
 type Props = {
   devices: Device[];
@@ -30,6 +33,7 @@ const DevicesList = ({ devices }: Props) => {
               {key}
             </TableHead>
           ))}
+          <TableHead className="w-[100px]">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,6 +42,13 @@ const DevicesList = ({ devices }: Props) => {
             {Object.values(device).map((value) => (
               <TableCell key={index}>{value}</TableCell>
             ))}
+            <TableCell>
+              <Button asChild variant="ghost" size="icon">
+                <Link href={`/devices/${device.serialNumber}/edit`}>
+                  <Pencil className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
