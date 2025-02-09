@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Device } from '@prisma/client';
-import DeleteDeviceBtn from './DeleteDeviceBtn';
+import DeleteDeviceDialog from './DeleteDeviceDialog';
 import EditDeviceBtn from './EditDeviceBtn';
 
 type Props = {
@@ -43,7 +43,7 @@ const DevicesList = ({ devices }: Props) => {
             ))}
             <TableCell>
               <EditDeviceBtn serialNumber={device.serialNumber} />
-              <DeleteDeviceBtn id={device.id} />
+              <DeleteDeviceDialog id={device.id} />
             </TableCell>
           </TableRow>
         ))}
