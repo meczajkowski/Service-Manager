@@ -32,6 +32,10 @@ const navItems = [
     label: 'Devices',
     href: AppRoutes.devices,
   },
+  {
+    label: 'Customers',
+    href: AppRoutes.customers,
+  },
 ];
 
 export default function RootLayout({

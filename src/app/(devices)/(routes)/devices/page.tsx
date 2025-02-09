@@ -15,7 +15,11 @@ const page = async () => {
           <Link href={AppRoutes.devicesNew}>Add Device</Link>
         </Button>
       </div>
-      <DevicesList devices={devices} />
+      {devices.length > 0 ? (
+        <DevicesList devices={devices} />
+      ) : (
+        <p>No devices found</p>
+      )}
     </div>
   );
 };
