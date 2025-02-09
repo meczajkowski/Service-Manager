@@ -3,6 +3,7 @@
 import { AppRoutes } from '@/routes';
 import {
   addDevice,
+  deleteDevice,
   getDevices,
   updateDevice,
 } from '@/services/devices.service';
@@ -24,4 +25,10 @@ export const updateDeviceAction = async (id: string, device: DevicePayload) => {
   const updatedDevice = await updateDevice(id, device);
   revalidatePath(AppRoutes.devices);
   return updatedDevice;
+};
+
+export const deleteDeviceAction = async (id: string) => {
+  const deletedDevice = await deleteDevice(id);
+  revalidatePath(AppRoutes.devices);
+  return deletedDevice;
 };

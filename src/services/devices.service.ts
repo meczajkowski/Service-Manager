@@ -36,3 +36,10 @@ export const updateDevice = async (
   });
   return updatedDevice;
 };
+
+export const deleteDevice = async (id: Device['id']) => {
+  const deletedDevice = await prisma.device.delete({
+    where: { id },
+  });
+  return deletedDevice;
+};
