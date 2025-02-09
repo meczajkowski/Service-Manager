@@ -1,4 +1,4 @@
-import { DeviceModel, PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -27,20 +27,10 @@ async function main() {
     },
   });
 
-  const device = await prisma.device.upsert({
-    where: { serialNumber: '1234567890' },
-    update: {},
-    create: {
-      model: DeviceModel.C224,
-      serialNumber: '1234567890',
-    },
-  });
-
   console.log('Database seeded successfully!');
 
   console.log('admin', admin);
   console.log('technician', technician);
-  console.log('device', device);
 }
 main()
   .then(async () => {

@@ -30,20 +30,3 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-enum DeviceModel {
-  C224
-  C224e
-  C258
-  C250i
-  C251i
-}
-
-model Device {
-  id           String      @id @default(uuid())
-  model        DeviceModel
-  serialNumber String      @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
