@@ -7,3 +7,12 @@ export const addDevice = async (device: Prisma.DeviceCreateInput) => {
   });
   return newDevice;
 };
+
+export const getDevices = async () => {
+  const devices = await prisma.device.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return devices;
+};
