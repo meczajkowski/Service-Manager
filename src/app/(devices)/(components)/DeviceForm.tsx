@@ -21,6 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Device, DeviceModel } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { addDeviceAction, updateDeviceAction } from '../actions';
 import { deviceSchema, DeviceSchema } from '../schema';
 
@@ -45,11 +46,14 @@ const DeviceForm = ({ device }: Props) => {
     try {
       if (isEditMode && device) {
         await updateDeviceAction(device.id, values);
+        toast.success('Device updated successfully');
       } else {
         await addDeviceAction(values);
+        toast.success('Device added successfully');
       }
       router.push('/devices');
     } catch (error) {
+      toast.error(`Failed to ${isEditMode ? 'update' : 'add'} device`);
       console.error(
         `Failed to ${isEditMode ? 'update' : 'add'} device:`,
         error,

@@ -3,6 +3,7 @@ import Container from '@/components/ui/container';
 import { AppRoutes } from '@/routes';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { Toaster } from 'sonner';
 import './globals.css';
 
 const geistSans = localFont({
@@ -47,6 +48,7 @@ export default function RootLayout({
           <Header links={navItems} />
           {children}
         </Container>
+        <Toaster richColors />
       </body>
     </html>
   );
