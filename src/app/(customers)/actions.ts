@@ -6,6 +6,7 @@ import {
   deleteCustomer,
   getCustomer,
   getCustomers,
+  getCustomerWithRelations,
   updateCustomer,
 } from '@/services/customers.service';
 import { Customer } from '@prisma/client';
@@ -25,6 +26,11 @@ export const getCustomersAction = async () => {
 
 export const getCustomerAction = async (id: Customer['id']) => {
   const customer = await getCustomer(id);
+  return customer;
+};
+
+export const getCustomerWithRelationsAction = async (id: Customer['id']) => {
+  const customer = await getCustomerWithRelations(id);
   return customer;
 };
 
