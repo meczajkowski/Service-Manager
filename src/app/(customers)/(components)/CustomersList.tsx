@@ -1,3 +1,4 @@
+'use client';
 import {
   Table,
   TableBody,
@@ -6,15 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { AppRoutes } from '@/routes';
 import { Customer } from '@prisma/client';
-import DeleteCustomerDialog from './DeleteCustomerDialog';
-import EditCustomerBtn from './EditCustomerBtn';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   customers: Customer[];
 };
 
 const CustomersList = ({ customers }: Props) => {
+  const router = useRouter();
   const serializedCustomers = customers.map((customer) => ({
     ...customer,
     createdAt: customer.createdAt.toISOString().split('T')[0],
@@ -30,20 +32,20 @@ const CustomersList = ({ customers }: Props) => {
               {key}
             </TableHead>
           ))}
-
-          <TableHead className="w-[100px]">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {serializedCustomers.map((customer, index) => (
-          <TableRow key={customer.id}>
+          <TableRow
+            className="cursor-pointer"
+            key={customer.id}
+            onClick={() => {
+              router.push(`${AppRoutes.customers}/${customer.id}`);
+            }}
+          >
             {Object.values(customer).map((value) => (
               <TableCell key={index}>{value}</TableCell>
             ))}
-            <TableCell>
-              <EditCustomerBtn id={customer.id} />
-              <DeleteCustomerDialog id={customer.id} />
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>
