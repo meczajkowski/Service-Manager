@@ -1,17 +1,9 @@
+import CustomersContactsList from '@/app/(customers)/(components)/CustomersContactsList';
+import CustomersDevicesList from '@/app/(customers)/(components)/CustomersDevicesList';
 import DeleteCustomerDialog from '@/app/(customers)/(components)/DeleteCustomerDialog';
 import EditCustomerBtn from '@/app/(customers)/(components)/EditCustomerBtn';
 import { getCustomerWithRelationsAction } from '@/app/(customers)/actions';
-import DeleteDeviceDialog from '@/app/(devices)/(components)/DeleteDeviceDialog';
-import EditDeviceBtn from '@/app/(devices)/(components)/EditDeviceBtn';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { AppRoutes } from '@/routes';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -70,29 +62,7 @@ const page = async ({ params }: { params: { id: string } }) => {
             </div>
           </h2>
           {customer.contacts.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  {/* <TableHead>Actions</TableHead> */}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customer.contacts.map((contact) => (
-                  <TableRow key={contact.id}>
-                    <TableCell>{contact.name}</TableCell>
-                    <TableCell>{contact.email}</TableCell>
-                    <TableCell>{contact.phone}</TableCell>
-                    <TableCell className="flex gap-2">
-                      {/* <EditContactBtn id={contact.id} /> */}
-                      {/* <DeleteContactDialog id={contact.id} /> */}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <CustomersContactsList contacts={customer.contacts} />
           ) : (
             <p>No contacts assigned to this customer</p>
           )}
@@ -113,31 +83,7 @@ const page = async ({ params }: { params: { id: string } }) => {
             </div>
           </h2>
           {customer.devices.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Model</TableHead>
-                  <TableHead>Serial Number</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customer.devices.map((device) => (
-                  <TableRow key={device.id}>
-                    <TableCell>{device.model}</TableCell>
-                    <TableCell>{device.serialNumber}</TableCell>
-                    <TableCell>
-                      {new Date(device.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="flex gap-2">
-                      <EditDeviceBtn serialNumber={device.serialNumber} />
-                      <DeleteDeviceDialog id={device.id} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <CustomersDevicesList devices={customer.devices} />
           ) : (
             <p>No devices assigned to this customer</p>
           )}
