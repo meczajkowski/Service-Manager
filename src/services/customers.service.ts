@@ -24,6 +24,17 @@ export const getCustomer = async (id: Customer['id']) => {
   return customer;
 };
 
+export const getCustomerWithRelations = async (id: Customer['id']) => {
+  const customer = await prisma.customer.findUnique({
+    where: { id },
+    include: {
+      devices: true,
+      contacts: true,
+    },
+  });
+  return customer;
+};
+
 export const updateCustomer = async (
   id: Customer['id'],
   customer: Prisma.CustomerUpdateInput,
