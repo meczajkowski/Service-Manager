@@ -3,6 +3,8 @@ export enum AppRoutes {
   signIn = '/api/auth/signin',
   signOut = '/api/auth/signout',
   authError = '/api/auth/error',
+  devices = '/devices',
+  devicesNew = '/devices/new',
 }
 
 export const PUBLIC_ROUTES = [AppRoutes.signIn, AppRoutes.authError];
