@@ -5,6 +5,8 @@ export enum AppRoutes {
   authError = '/api/auth/error',
   devices = '/devices',
   devicesNew = '/devices/new',
+  customers = '/customers',
+  customersNew = '/customers/new',
 }
 
 export const PUBLIC_ROUTES = [AppRoutes.signIn, AppRoutes.authError];
