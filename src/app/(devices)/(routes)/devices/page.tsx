@@ -8,10 +8,13 @@ const page = async () => {
   const devices = await getDevicesAction();
 
   return (
-    <div>
-      <Button asChild>
-        <Link href={AppRoutes.devicesNew}>Add Device</Link>
-      </Button>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1>Devices</h1>
+        <Button asChild>
+          <Link href={AppRoutes.devicesNew}>Add Device</Link>
+        </Button>
+      </div>
       <DevicesList devices={devices} />
     </div>
   );

@@ -7,6 +7,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Device } from '@prisma/client';
+import DeleteDeviceDialog from './DeleteDeviceDialog';
+import EditDeviceBtn from './EditDeviceBtn';
 
 type Props = {
   devices: Device[];
@@ -30,6 +32,7 @@ const DevicesList = ({ devices }: Props) => {
               {key}
             </TableHead>
           ))}
+          <TableHead className="w-[100px]">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,6 +41,10 @@ const DevicesList = ({ devices }: Props) => {
             {Object.values(device).map((value) => (
               <TableCell key={index}>{value}</TableCell>
             ))}
+            <TableCell>
+              <EditDeviceBtn serialNumber={device.serialNumber} />
+              <DeleteDeviceDialog id={device.id} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
