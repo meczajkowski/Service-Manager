@@ -17,6 +17,7 @@ type Props<T extends z.ZodTypeAny> = {
     onSuccessMessage?: string;
     onErrorMessage: string;
     redirectTo?: string;
+    onSuccess?: () => void;
   };
 };
 
@@ -32,6 +33,7 @@ const FormBase = <T extends z.ZodTypeAny>(props: Props<T>) => {
     try {
       await props.config.onSubmit(values);
       toast.success(props.config.onSuccessMessage ?? 'Operation successful');
+      props.config.onSuccess?.();
       if (props.config.redirectTo) {
         router.push(props.config.redirectTo);
       }

@@ -1,3 +1,4 @@
+import { AppRoutes } from '@/routes';
 import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 
@@ -8,7 +9,7 @@ type Props = {
 const EditContactBtn = ({ id }: Props) => {
   return (
     <Link
-      href={`/contacts/${id}/edit`}
+      href={`${AppRoutes.contacts}/${id}/edit`}
       className="flex w-full items-center gap-2"
     >
       <Pencil className="h-4 w-4" />

@@ -5,6 +5,7 @@ import { contacts } from '@/services/contacts.service';
 import { Contact, Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { ContactSchema } from './schema';
+import { ContactPayload } from './types';
 
 export const addContactAction = async (data: ContactSchema) => {
   const newContact = await contacts.create({
@@ -33,7 +34,7 @@ export const getContactAction = async (id: Contact['id']) => {
 
 export const updateContactAction = async (
   id: Contact['id'],
-  contact: Contact,
+  contact: ContactPayload,
 ) => {
   const updatedContact = await contacts.update(id, contact);
   revalidatePath(AppRoutes.customers);
