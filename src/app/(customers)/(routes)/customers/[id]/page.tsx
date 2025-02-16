@@ -1,11 +1,8 @@
+import CustomerContactsSection from '@/app/(customers)/(components)/CustomerContactsSection';
 import CustomerDevicesSection from '@/app/(customers)/(components)/CustomerDevicesSection';
-import CustomersContactsList from '@/app/(customers)/(components)/CustomersContactsList';
 import DeleteCustomerDialog from '@/app/(customers)/(components)/DeleteCustomerDialog';
 import EditCustomerBtn from '@/app/(customers)/(components)/EditCustomerBtn';
 import { getCustomerWithRelationsAction } from '@/app/(customers)/actions';
-import { Button } from '@/components/ui/button';
-import { AppRoutes } from '@/routes';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 const page = async ({ params }: { params: { id: string } }) => {
@@ -48,25 +45,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Contacts */}
-        <div className="space-y-4 rounded-lg border p-4">
-          <h2>
-            <div className="flex items-center justify-between">
-              Contacts
-              <Button asChild>
-                <Link
-                  href={`${AppRoutes.customers}/${customer.id}/devices/new`}
-                >
-                  Add Contact
-                </Link>
-              </Button>
-            </div>
-          </h2>
-          {customer.contacts.length > 0 ? (
-            <CustomersContactsList contacts={customer.contacts} />
-          ) : (
-            <p>No contacts assigned to this customer</p>
-          )}
-        </div>
+        <CustomerContactsSection customer={customer} />
 
         {/* Devices */}
         <CustomerDevicesSection customer={customer} />
