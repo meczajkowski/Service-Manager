@@ -11,14 +11,14 @@ import {
 } from '@/components/ui/alert-dialog';
 import { buttonVariants } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
-import DeleteDeviceDialogBtn from './DeleteDeviceDialogBtn';
+import DeleteContactDialogBtn from './DeleteContactDialogBtn';
 
 type Props = {
   id: string;
   onSuccess?: () => void;
 };
 
-const DeleteDeviceDialog = ({ id, onSuccess }: Props) => {
+const DeleteContactDialog = ({ id, onSuccess }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -32,7 +32,7 @@ const DeleteDeviceDialog = ({ id, onSuccess }: Props) => {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the
-            device and remove it from the database.
+            contact and remove it from the database.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -41,7 +41,7 @@ const DeleteDeviceDialog = ({ id, onSuccess }: Props) => {
           <AlertDialogAction
             className={buttonVariants({ variant: 'destructive' })}
           >
-            <DeleteDeviceDialogBtn id={id} onSuccess={onSuccess} />
+            <DeleteContactDialogBtn id={id} onSuccess={onSuccess} />
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -49,4 +49,4 @@ const DeleteDeviceDialog = ({ id, onSuccess }: Props) => {
   );
 };
 
-export default DeleteDeviceDialog;
+export default DeleteContactDialog;

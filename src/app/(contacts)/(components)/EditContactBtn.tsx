@@ -2,13 +2,13 @@ import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 
 type Props = {
-  serialNumber: string;
+  id: string;
 };
 
-const EditBtn = ({ serialNumber }: Props) => {
+const EditContactBtn = ({ id }: Props) => {
   return (
     <Link
-      href={`/devices/${serialNumber}/edit`}
+      href={`/contacts/${id}/edit`}
       className="flex w-full items-center gap-2"
     >
       <Pencil className="h-4 w-4" />
@@ -17,4 +17,4 @@ const EditBtn = ({ serialNumber }: Props) => {
   );
 };
 
-export default EditBtn;
+export default EditContactBtn;

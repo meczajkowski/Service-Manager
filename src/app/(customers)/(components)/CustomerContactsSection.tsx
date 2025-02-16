@@ -1,10 +1,11 @@
 'use client';
 
 import AddContactForm from '@/app/(contacts)/(components)/(forms)/AddContactForm';
+import { ContactTableColumns } from '@/app/(contacts)/(components)/(tables)/ContactTableColumns';
 import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
 import { useState } from 'react';
 import { CustomerWithRelations } from '../types';
-import CustomersContactsList from './CustomersContactsList';
 
 type Props = {
   customer: CustomerWithRelations;
@@ -31,7 +32,10 @@ const CustomerContactsSection = (props: Props) => {
         />
       )}
       {props.customer.contacts.length > 0 ? (
-        <CustomersContactsList contacts={props.customer.contacts} />
+        <DataTable
+          columns={ContactTableColumns}
+          data={props.customer.contacts}
+        />
       ) : (
         <p>No contacts assigned to this customer</p>
       )}

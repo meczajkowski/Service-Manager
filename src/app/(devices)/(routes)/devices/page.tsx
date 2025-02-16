@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
 import { AppRoutes } from '@/routes';
 import Link from 'next/link';
-import DevicesList from '../../(components)/DevicesList';
+import { DeviceTableColumns } from '../../(components)/(tables)/DeviceTableColumns';
 import { getDevicesAction } from '../../actions';
 
 const page = async () => {
@@ -16,7 +17,7 @@ const page = async () => {
         </Button>
       </div>
       {devices.length > 0 ? (
-        <DevicesList devices={devices} />
+        <DataTable columns={DeviceTableColumns} data={devices} />
       ) : (
         <p>No devices found</p>
       )}

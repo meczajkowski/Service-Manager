@@ -1,10 +1,11 @@
 'use client';
 
 import AddDeviceForm from '@/app/(devices)/(components)/(forms)/AddDeviceForm';
+import { DeviceTableColumns } from '@/app/(devices)/(components)/(tables)/DeviceTableColumns';
 import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
 import { useState } from 'react';
 import { CustomerWithRelations } from '../types';
-import CustomersDevicesList from './CustomersDevicesList';
 
 type Props = {
   customer: CustomerWithRelations;
@@ -31,7 +32,7 @@ const CustomerDevicesSection = (props: Props) => {
         />
       )}
       {props.customer.devices.length > 0 ? (
-        <CustomersDevicesList devices={props.customer.devices} />
+        <DataTable columns={DeviceTableColumns} data={props.customer.devices} />
       ) : (
         <p>No devices assigned to this customer</p>
       )}
