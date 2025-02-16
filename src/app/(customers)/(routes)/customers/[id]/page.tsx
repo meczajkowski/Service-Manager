@@ -1,5 +1,5 @@
+import CustomerDevicesSection from '@/app/(customers)/(components)/CustomerDevicesSection';
 import CustomersContactsList from '@/app/(customers)/(components)/CustomersContactsList';
-import CustomersDevicesList from '@/app/(customers)/(components)/CustomersDevicesList';
 import DeleteCustomerDialog from '@/app/(customers)/(components)/DeleteCustomerDialog';
 import EditCustomerBtn from '@/app/(customers)/(components)/EditCustomerBtn';
 import { getCustomerWithRelationsAction } from '@/app/(customers)/actions';
@@ -69,25 +69,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Devices */}
-        <div className="space-y-4 rounded-lg border p-4">
-          <h2>
-            <div className="flex items-center justify-between">
-              Devices
-              <Button asChild>
-                <Link
-                  href={`${AppRoutes.customers}/${customer.id}/devices/new`}
-                >
-                  Add Device
-                </Link>
-              </Button>
-            </div>
-          </h2>
-          {customer.devices.length > 0 ? (
-            <CustomersDevicesList devices={customer.devices} />
-          ) : (
-            <p>No devices assigned to this customer</p>
-          )}
-        </div>
+        <CustomerDevicesSection customer={customer} />
       </div>
     </div>
   );

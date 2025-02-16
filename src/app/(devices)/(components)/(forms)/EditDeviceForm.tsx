@@ -18,7 +18,8 @@ const EditDeviceForm = (props: Props) => {
     defaultValues: {
       model: props.device.model,
       serialNumber: props.device.serialNumber,
-    },
+      customerId: props.device.customerId ?? '',
+    } as DeviceSchema,
     onSubmit: async (values: DeviceSchema) => {
       await updateDeviceAction(props.device.id, values);
     },

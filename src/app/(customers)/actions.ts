@@ -11,7 +11,7 @@ import {
 } from '@/services/customers.service';
 import { Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { CustomerPayload } from './types';
+import { CustomerPayload, CustomerWithRelations } from './types';
 
 export const createCustomerAction = async (customer: CustomerPayload) => {
   const newCustomer = await createCustomer(customer);
@@ -29,7 +29,9 @@ export const getCustomerAction = async (id: Customer['id']) => {
   return customer;
 };
 
-export const getCustomerWithRelationsAction = async (id: Customer['id']) => {
+export const getCustomerWithRelationsAction = async (
+  id: Customer['id'],
+): Promise<CustomerWithRelations | null> => {
   const customer = await getCustomerWithRelations(id);
   return customer;
 };

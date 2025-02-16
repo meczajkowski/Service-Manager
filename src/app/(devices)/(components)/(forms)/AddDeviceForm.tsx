@@ -2,31 +2,45 @@
 
 import FormBase from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
-import { AppRoutes } from '@/routes';
+import { cn } from '@/lib/utils';
 import { DeviceModel } from '@prisma/client';
 import { addDeviceAction } from '../../actions';
 import { deviceSchema, DeviceSchema } from '../../schema';
 import DeviceFormFields from './DeviceFormFields';
 
-const AddDeviceForm = () => {
+type Props = {
+  values?: Partial<DeviceSchema>;
+  formStyles?: string;
+  btnStyles?: string;
+  redirectTo?: string;
+  onCancel?: () => void;
+};
+
+const AddDeviceForm = (props: Props) => {
   const formConfig = {
     schema: deviceSchema,
     defaultValues: {
       model: DeviceModel.C224,
       serialNumber: '',
-    },
+      customerId: '',
+      ...props.values,
+    } as DeviceSchema,
     onSubmit: async (values: DeviceSchema) => {
       await addDeviceAction(values);
     },
     onSuccessMessage: 'Device added successfully',
     onErrorMessage: 'Failed to add device',
-    redirectTo: AppRoutes.devices,
+    redirect: props.redirectTo ?? null,
   };
 
   return (
-    <FormBase config={formConfig} className="space-y-8">
+    <FormBase config={formConfig} className={cn(props.formStyles)}>
       <DeviceFormFields />
-      <FormButtons submitLabel={'Add device'} className="flex gap-2" />
+      <FormButtons
+        onCancel={props.onCancel}
+        submitLabel={'Add device'}
+        className={cn(props.btnStyles)}
+      />
     </FormBase>
   );
 };
