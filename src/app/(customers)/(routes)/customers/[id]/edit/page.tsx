@@ -1,4 +1,4 @@
-import CustomerForm from '@/app/(customers)/(components)/CustomerForm';
+import EditCustomerForm from '@/app/(customers)/(components)/(forms)/EditCustomerForm';
 import { getCustomerAction } from '@/app/(customers)/actions';
 import { notFound } from 'next/navigation';
 
@@ -12,7 +12,7 @@ const page = async ({ params }: { params: { id: string } }) => {
   return (
     <div className="space-y-8">
       <h1>Edit Customer</h1>
-      <CustomerForm customer={customer} />
+      <EditCustomerForm customer={customer} />
     </div>
   );
 };
