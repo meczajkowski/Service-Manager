@@ -23,7 +23,7 @@ const CustomerContactsSection = (props: Props) => {
       </h2>
       {open && (
         <AddContactForm
-          formStyles="grid grid-cols-2 gap-4"
+          formStyles="grid grid-cols-2 gap-4 pb-4"
           btnStyles="flex gap-2"
           values={{ customers: [props.customer] }}
           onCancel={() => setOpen(false)}

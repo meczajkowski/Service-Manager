@@ -36,8 +36,10 @@ const AddContactForm = (props: Props) => {
   };
 
   return (
-    <FormBase config={formConfig} className={cn(props.formStyles)}>
-      <ContactFields />
+    <FormBase config={formConfig}>
+      <div className={cn(props.formStyles)}>
+        <ContactFields />
+      </div>
       <FormButtons
         onCancel={props.onCancel}
         submitLabel={'Add contact'}
