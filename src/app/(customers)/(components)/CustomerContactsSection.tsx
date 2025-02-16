@@ -27,6 +27,7 @@ const CustomerContactsSection = (props: Props) => {
           btnStyles="flex gap-2"
           values={{ customers: [props.customer] }}
           onCancel={() => setOpen(false)}
+          onSuccess={() => setOpen(false)}
         />
       )}
       {props.customer.contacts.length > 0 ? (

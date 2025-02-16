@@ -13,6 +13,7 @@ type Props = {
   btnStyles?: string;
   redirectTo?: string;
   onCancel?: () => void;
+  onSuccess?: () => void;
 };
 
 const AddContactForm = (props: Props) => {
@@ -27,6 +28,7 @@ const AddContactForm = (props: Props) => {
     } as ContactSchema,
     onSubmit: async (values: ContactSchema) => {
       await addContactAction(values);
+      props.onSuccess?.();
     },
     onSuccessMessage: 'Contact added successfully',
     onErrorMessage: 'Failed to add contact',

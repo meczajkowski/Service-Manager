@@ -14,6 +14,7 @@ type Props = {
   btnStyles?: string;
   redirectTo?: string;
   onCancel?: () => void;
+  onSuccess?: () => void;
 };
 
 const AddDeviceForm = (props: Props) => {
@@ -27,6 +28,7 @@ const AddDeviceForm = (props: Props) => {
     } as DeviceSchema,
     onSubmit: async (values: DeviceSchema) => {
       await addDeviceAction(values);
+      props.onSuccess?.();
     },
     onSuccessMessage: 'Device added successfully',
     onErrorMessage: 'Failed to add device',

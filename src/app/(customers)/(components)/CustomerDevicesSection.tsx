@@ -27,6 +27,7 @@ const CustomerDevicesSection = (props: Props) => {
           btnStyles="flex gap-2"
           values={{ customerId: props.customer.id }}
           onCancel={() => setOpen(false)}
+          onSuccess={() => setOpen(false)}
         />
       )}
       {props.customer.devices.length > 0 ? (
