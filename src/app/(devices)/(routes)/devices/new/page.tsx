@@ -1,10 +1,10 @@
-import DeviceForm from '@/app/(devices)/(components)/DeviceForm';
+import AddDeviceForm from '@/app/(devices)/(components)/(forms)/AddDeviceForm';
 
 const page = () => {
   return (
     <div className="space-y-8">
       <h1>Add New Device</h1>
-      <DeviceForm />
+      <AddDeviceForm />
     </div>
   );
 };
