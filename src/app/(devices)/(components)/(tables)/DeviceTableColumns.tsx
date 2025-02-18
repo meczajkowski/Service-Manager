@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { Device } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
@@ -41,9 +41,9 @@ const ActionsCell = ({ device }: { device: Device }) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  const isCustomerDetailsPage = pathname.includes(
-    `${AppRoutes.customers}/${device.customerId}`,
-  );
+  const isCustomerDetailsPage =
+    device.customerId &&
+    pathname.includes(routes.customers.view(device.customerId));
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -57,7 +57,7 @@ const ActionsCell = ({ device }: { device: Device }) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         {device.customerId && !isCustomerDetailsPage && (
           <DropdownMenuItem>
-            <Link href={`${AppRoutes.customers}/${device.customerId}`}>
+            <Link href={routes.customers.view(device.customerId)}>
               View customer
             </Link>
           </DropdownMenuItem>

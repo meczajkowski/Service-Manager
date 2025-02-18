@@ -1,6 +1,6 @@
 'use server';
 
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { contacts } from '@/services/contacts.service';
 import { Contact, Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
@@ -20,7 +20,8 @@ export const addContactAction = async (data: ContactSchema) => {
         }
       : {}),
   });
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.contacts.list);
+  revalidatePath(routes.customers.list);
   return newContact;
 };
 
@@ -37,13 +38,15 @@ export const updateContactAction = async (
   contact: ContactPayload,
 ) => {
   const updatedContact = await contacts.update(id, contact);
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.contacts.list);
+  revalidatePath(routes.customers.list);
   return updatedContact;
 };
 
 export const deleteContactAction = async (id: Contact['id']) => {
   const deletedContact = await contacts.delete(id);
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.contacts.list);
+  revalidatePath(routes.customers.list);
   return deletedContact;
 };
 

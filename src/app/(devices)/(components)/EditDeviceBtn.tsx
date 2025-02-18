@@ -1,3 +1,4 @@
+import { routes } from '@/routes';
 import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 
@@ -5,10 +6,10 @@ type Props = {
   serialNumber: string;
 };
 
-const EditBtn = ({ serialNumber }: Props) => {
+const EditDeviceBtn = ({ serialNumber }: Props) => {
   return (
     <Link
-      href={`/devices/${serialNumber}/edit`}
+      href={routes.devices.edit(serialNumber)}
       className="flex w-full items-center gap-2"
     >
       <Pencil className="h-4 w-4" />
@@ -17,4 +18,4 @@ const EditBtn = ({ serialNumber }: Props) => {
   );
 };
 
-export default EditBtn;
+export default EditDeviceBtn;

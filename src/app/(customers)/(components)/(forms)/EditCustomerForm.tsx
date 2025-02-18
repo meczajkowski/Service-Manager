@@ -2,7 +2,7 @@
 
 import FormBase from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { updateCustomerAction } from '../../actions';
 import { customerSchema, CustomerSchema } from '../../schema';
@@ -26,7 +26,7 @@ const EditCustomerForm = (props: Props) => {
     },
     onSuccessMessage: 'Customer updated successfully',
     onErrorMessage: 'Failed to update customer',
-    redirectTo: AppRoutes.customers,
+    redirectTo: routes.customers.list,
   };
 
   return (

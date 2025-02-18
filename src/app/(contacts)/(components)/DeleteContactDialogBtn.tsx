@@ -20,7 +20,7 @@ const DeleteContactDialogBtn = ({ id, onSuccess }: Props) => {
     }
   };
 
-  return <button onClick={handleClick}>Delete</button>;
+  return <span onClick={handleClick}>Delete</span>;
 };
 
 export default DeleteContactDialogBtn;

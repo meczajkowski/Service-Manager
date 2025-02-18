@@ -2,7 +2,7 @@
 
 import FormBase from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { Device } from '@prisma/client';
 import { updateDeviceAction } from '../../actions';
 import { deviceSchema, DeviceSchema } from '../../schema';
@@ -25,7 +25,7 @@ const EditDeviceForm = (props: Props) => {
     },
     onSuccessMessage: 'Device updated successfully',
     onErrorMessage: 'Failed to update device',
-    redirectTo: AppRoutes.devices,
+    redirectTo: routes.devices.list,
   };
 
   return (

@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Container from '@/components/ui/container';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Toaster } from 'sonner';
@@ -26,15 +26,15 @@ export const metadata: Metadata = {
 const navItems = [
   {
     label: 'Home',
-    href: AppRoutes.home,
+    href: routes.home,
   },
   {
     label: 'Devices',
-    href: AppRoutes.devices,
+    href: routes.devices.list,
   },
   {
     label: 'Customers',
-    href: AppRoutes.customers,
+    href: routes.customers.list,
   },
 ];
 

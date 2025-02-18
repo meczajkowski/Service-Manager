@@ -2,7 +2,7 @@
 
 import FormBase from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { createCustomerAction } from '../../actions';
 import { customerSchema, CustomerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
@@ -21,7 +21,7 @@ const AddCustomerForm = () => {
     },
     onSuccessMessage: 'Customer added successfully',
     onErrorMessage: 'Failed to add customer',
-    redirectTo: AppRoutes.customers,
+    redirectTo: routes.customers.list,
   };
 
   return (

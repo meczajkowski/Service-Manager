@@ -1,6 +1,6 @@
 'use client';
 
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { deleteCustomerAction } from '../actions';
@@ -15,7 +15,7 @@ const DeleteCustomerDialogBtn = ({ id }: Props) => {
     try {
       await deleteCustomerAction(id);
       toast.success('Customer deleted successfully');
-      router.push(AppRoutes.customers);
+      router.push(routes.customers.list);
     } catch (error) {
       toast.error('Failed to delete customer');
       console.error('Failed to delete customer:', error);
