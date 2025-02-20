@@ -1,6 +1,6 @@
 'use server';
 
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import {
   createCustomer,
   deleteCustomer,
@@ -15,7 +15,7 @@ import { CustomerPayload, CustomerWithRelations } from './types';
 
 export const createCustomerAction = async (customer: CustomerPayload) => {
   const newCustomer = await createCustomer(customer);
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.customers.list);
   return newCustomer;
 };
 
@@ -41,11 +41,11 @@ export const updateCustomerAction = async (
   customer: CustomerPayload,
 ) => {
   const updatedCustomer = await updateCustomer(id, customer);
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.customers.list);
   return updatedCustomer;
 };
 
 export const deleteCustomerAction = async (id: Customer['id']) => {
   await deleteCustomer(id);
-  revalidatePath(AppRoutes.customers);
+  revalidatePath(routes.customers.list);
 };

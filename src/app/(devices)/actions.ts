@@ -1,6 +1,6 @@
 'use server';
 
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import {
   addDevice,
   deleteDevice,
@@ -12,7 +12,7 @@ import { DevicePayload } from './types';
 
 export const addDeviceAction = async (device: DevicePayload) => {
   const newDevice = await addDevice(device);
-  revalidatePath(AppRoutes.devices);
+  revalidatePath(routes.devices.list);
   return newDevice;
 };
 
@@ -23,12 +23,12 @@ export const getDevicesAction = async () => {
 
 export const updateDeviceAction = async (id: string, device: DevicePayload) => {
   const updatedDevice = await updateDevice(id, device);
-  revalidatePath(AppRoutes.devices);
+  revalidatePath(routes.devices.list);
   return updatedDevice;
 };
 
 export const deleteDeviceAction = async (id: string) => {
   const deletedDevice = await deleteDevice(id);
-  revalidatePath(AppRoutes.devices);
+  revalidatePath(routes.devices.list);
   return deletedDevice;
 };

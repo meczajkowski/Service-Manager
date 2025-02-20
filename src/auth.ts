@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { AppRoutes, DEFAULT_REDIRECT, PUBLIC_ROUTES } from './routes';
+import { DEFAULT_REDIRECT, PUBLIC_PATHS } from './routes';
 import { findUserByEmail } from './services/users.service';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -50,8 +50,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnPublicRoute = PUBLIC_ROUTES.includes(
-        nextUrl.pathname as AppRoutes,
+      const isOnPublicRoute = PUBLIC_PATHS.includes(
+        nextUrl.pathname as (typeof PUBLIC_PATHS)[number],
       );
 
       if (!isOnPublicRoute) {
