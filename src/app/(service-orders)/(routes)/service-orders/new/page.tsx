@@ -1,19 +1,17 @@
 import { getDeviceWithRelationsAction } from '@/app/(devices)/actions';
+import { ServiceOrderForm } from '@/app/(service-orders)/(components)/(forms)/ServiceOrderForm';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { routes } from '@/routes';
 import Link from 'next/link';
-import { CreateServiceOrderForm } from '../../../(components)/(forms)/CreateServiceOrderForm';
 
-type NewServiceOrderPageProps = {
+type Props = {
   searchParams: {
     deviceId?: string;
   };
 };
 
-const NewServiceOrderPage = async ({
-  searchParams,
-}: NewServiceOrderPageProps) => {
+const page = async ({ searchParams }: Props) => {
   if (!searchParams.deviceId) {
     return <div>Device ID is required to create a service order</div>;
   }
@@ -67,7 +65,7 @@ const NewServiceOrderPage = async ({
             )}
           </div>
           <div className="flex flex-col gap-2">
-            <CreateServiceOrderForm deviceId={searchParams.deviceId} />
+            <ServiceOrderForm deviceId={searchParams.deviceId} />
           </div>
         </div>
       </div>
@@ -75,4 +73,4 @@ const NewServiceOrderPage = async ({
   );
 };
 
-export default NewServiceOrderPage;
+export default page;

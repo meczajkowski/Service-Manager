@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, ServiceStatus } from '@prisma/client';
 import { prisma } from '../../prisma/prisma';
 
 export const serviceOrders = {
@@ -48,6 +48,29 @@ export const serviceOrders = {
     return await prisma.serviceOrder.findMany({
       orderBy: {
         createdAt: 'desc',
+      },
+    });
+  },
+
+  update: async ({
+    serviceOrderId,
+    troubleDescription,
+    assignedToId,
+    status,
+  }: {
+    serviceOrderId: string;
+    troubleDescription: string;
+    assignedToId: string;
+    status: ServiceStatus;
+  }) => {
+    return await prisma.serviceOrder.update({
+      where: { id: serviceOrderId },
+      data: {
+        troubleDescription,
+        assignedTo: {
+          connect: { id: assignedToId },
+        },
+        status,
       },
     });
   },

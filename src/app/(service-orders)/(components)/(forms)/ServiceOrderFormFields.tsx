@@ -3,6 +3,7 @@ import SelectField, {
   SelectFormFieldOption,
 } from '@/components/forms/fields/SelectField';
 import TextAreaField from '@/components/forms/fields/TextAreaField';
+import { ServiceStatus } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { ServiceOrderSchema } from '../../schema';
@@ -23,6 +24,11 @@ const ServiceOrderFormFields = () => {
     });
   }, []);
 
+  const statusOptions = Object.values(ServiceStatus).map((status) => ({
+    label: status,
+    value: status,
+  }));
+
   return (
     <>
       <TextAreaField
@@ -30,6 +36,12 @@ const ServiceOrderFormFields = () => {
         name="troubleDescription"
         label="Trouble Description"
         placeholder="Please describe the issue with the device..."
+      />
+      <SelectField
+        control={control}
+        label="Status"
+        name="status"
+        options={statusOptions}
       />
       <SelectField
         control={control}

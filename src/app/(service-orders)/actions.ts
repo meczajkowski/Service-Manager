@@ -5,17 +5,38 @@ import { routes } from '@/routes';
 import { getDevice } from '@/services/devices.service';
 import { serviceOrders } from '@/services/service-orders.service';
 import { users } from '@/services/users.service';
+import { ServiceStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+
+type CreateServiceOrderProps = {
+  deviceId: string;
+  troubleDescription: string;
+  assignedToId: string;
+  status: ServiceStatus;
+};
+
+type GetServiceOrdersProps = {
+  withRelations?: boolean;
+};
+
+type GetServiceOrderProps = {
+  id: string;
+  withRelations?: boolean;
+};
+
+type UpdateServiceOrderProps = {
+  serviceOrderId: string;
+  troubleDescription: string;
+  assignedToId: string;
+  status: ServiceStatus;
+};
 
 export const createServiceOrderAction = async ({
   deviceId,
   troubleDescription,
   assignedToId,
-}: {
-  deviceId: string;
-  troubleDescription: string;
-  assignedToId: string;
-}) => {
+  status,
+}: CreateServiceOrderProps) => {
   // get user data from session
   const user = await getCurrentUser();
   if (!user) {
@@ -44,6 +65,7 @@ export const createServiceOrderAction = async ({
     assignedTo: {
       connect: { id: assignedToId },
     },
+    status,
   });
 
   revalidatePath(routes.serviceOrders.list);
@@ -52,9 +74,7 @@ export const createServiceOrderAction = async ({
 
 export const getServiceOrdersAction = async ({
   withRelations = false,
-}: {
-  withRelations?: boolean;
-}) => {
+}: GetServiceOrdersProps) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error('Unauthorized');
@@ -70,14 +90,38 @@ export const getServiceOrdersAction = async ({
 export const getServiceOrderAction = async ({
   id,
   withRelations = false,
-}: {
-  id: string;
-  withRelations?: boolean;
-}) => {
+}: GetServiceOrderProps) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error('Unauthorized');
   }
 
   return await serviceOrders.get({ id, withRelations });
+};
+
+export const updateServiceOrderAction = async ({
+  serviceOrderId,
+  troubleDescription,
+  assignedToId,
+  status,
+}: UpdateServiceOrderProps) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error('Unauthorized');
+  }
+
+  const serviceOrder = await serviceOrders.get({ id: serviceOrderId });
+  if (!serviceOrder) {
+    throw new Error('Service order not found');
+  }
+
+  const updatedServiceOrder = await serviceOrders.update({
+    serviceOrderId,
+    troubleDescription,
+    assignedToId,
+    status,
+  });
+
+  revalidatePath(routes.serviceOrders.list);
+  return updatedServiceOrder;
 };
