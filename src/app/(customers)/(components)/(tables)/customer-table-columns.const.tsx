@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AppRoutes } from '@/routes';
+import { routes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
@@ -32,9 +32,7 @@ const ActionsCell = ({ customer }: ActionsCellProps) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href={`${AppRoutes.customers}/${customer.id}`}>
-            View customer
-          </Link>
+          <Link href={routes.customers.view(customer.id)}>View customer</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
