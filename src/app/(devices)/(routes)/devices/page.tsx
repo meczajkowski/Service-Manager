@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { routes } from '@/routes';
 import Link from 'next/link';
-import { DeviceTableColumns } from '../../(components)/(tables)/DeviceTableColumns';
+import { deviceTableColumns } from '../../(components)/(tables)/device-table-columns.const';
 import { getDevicesAction } from '../../actions';
 
 const page = async () => {
@@ -17,7 +17,7 @@ const page = async () => {
         </Button>
       </div>
       {devices.length > 0 ? (
-        <DataTable columns={DeviceTableColumns} data={devices} />
+        <DataTable columns={deviceTableColumns} data={devices} />
       ) : (
         <p>No devices found</p>
       )}

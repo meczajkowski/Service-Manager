@@ -10,20 +10,26 @@ import { Form } from '../ui/form';
 type Props<T extends z.ZodTypeAny> = {
   className?: ClassValue;
   children: React.ReactNode;
-  config: {
-    schema: T;
-    defaultValues: z.infer<T>;
-    onSubmit: (values: z.infer<T>) => Promise<void>;
-    onSuccessMessage?: string;
-    onErrorMessage: string;
-    redirectTo?: string;
-    onSuccess?: () => void;
-  };
+  config: FormConfig<T>;
 };
 
-const FormBase = <T extends z.ZodTypeAny>(props: Props<T>) => {
+export type FormConfig<T extends z.ZodTypeAny> = {
+  schema: T;
+  defaultValues: z.infer<T>;
+  onSubmit: (values: z.infer<T>) => Promise<void>;
+  onSuccessMessage?: string;
+  onErrorMessage: string;
+  redirectTo?: string;
+  onSuccess?: () => void;
+};
+
+const FormBase = <T extends z.ZodTypeAny>({
+  className,
+  children,
+  config,
+}: Props<T>) => {
   const router = useRouter();
-  const { schema, defaultValues } = props.config;
+  const { schema, defaultValues } = config;
   const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -31,15 +37,15 @@ const FormBase = <T extends z.ZodTypeAny>(props: Props<T>) => {
 
   const handleSubmit = async (values: z.infer<T>) => {
     try {
-      await props.config.onSubmit(values);
-      toast.success(props.config.onSuccessMessage ?? 'Operation successful');
-      props.config.onSuccess?.();
-      if (props.config.redirectTo) {
-        router.push(props.config.redirectTo);
+      await config.onSubmit(values);
+      toast.success(config.onSuccessMessage ?? 'Operation successful');
+      config.onSuccess?.();
+      if (config.redirectTo) {
+        router.push(config.redirectTo);
       }
     } catch (error) {
       console.error(error);
-      toast.error(props.config.onErrorMessage ?? 'Operation failed');
+      toast.error(config.onErrorMessage ?? 'Operation failed');
     }
   };
 
@@ -47,9 +53,9 @@ const FormBase = <T extends z.ZodTypeAny>(props: Props<T>) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className={cn(props.className)}
+        className={cn(className)}
       >
-        {props.children}
+        {children}
       </form>
     </Form>
   );

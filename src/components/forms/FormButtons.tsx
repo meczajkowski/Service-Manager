@@ -10,7 +10,7 @@ type Props = {
   className?: ClassValue;
 };
 
-const FormButtons = (props: Props) => {
+const FormButtons = ({ submitLabel, onCancel, className }: Props) => {
   const router = useRouter();
 
   const {
@@ -18,14 +18,14 @@ const FormButtons = (props: Props) => {
   } = useFormContext();
 
   return (
-    <div className={cn(props.className)}>
+    <div className={cn(className)}>
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Saving...' : props.submitLabel}
+        {isSubmitting ? 'Saving...' : submitLabel}
       </Button>
       <Button
         type="button"
         variant="outline"
-        onClick={props.onCancel ?? (() => router.back())}
+        onClick={onCancel ?? (() => router.back())}
         disabled={isSubmitting}
       >
         Cancel

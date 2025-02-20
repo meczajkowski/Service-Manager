@@ -1,10 +1,10 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
 import { addContactAction } from '../../actions';
-import { contactSchema, ContactSchema } from '../../schema';
+import { ContactSchema, contactSchema } from '../../schema';
 import ContactFields from './ContactFields';
 
 type Props = {
@@ -16,34 +16,41 @@ type Props = {
   onSuccess?: () => void;
 };
 
-const AddContactForm = (props: Props) => {
-  const formConfig = {
+const AddContactForm = ({
+  values,
+  formStyles,
+  btnStyles,
+  redirectTo,
+  onCancel,
+  onSuccess,
+}: Props) => {
+  const formConfig: FormConfig<typeof contactSchema> = {
     schema: contactSchema,
     defaultValues: {
       name: '',
       email: '',
       phone: '',
-      customers: [...(props.values?.customers ?? [])],
-      ...props.values,
-    } as ContactSchema,
-    onSubmit: async (values: ContactSchema) => {
+      customers: [...(values?.customers ?? [])],
+      ...values,
+    },
+    onSubmit: async (values) => {
       await addContactAction(values);
-      props.onSuccess?.();
+      onSuccess?.();
     },
     onSuccessMessage: 'Contact added successfully',
     onErrorMessage: 'Failed to add contact',
-    redirect: props.redirectTo ?? null,
+    redirectTo: redirectTo ?? undefined,
   };
 
   return (
     <FormBase config={formConfig}>
-      <div className={cn(props.formStyles)}>
+      <div className={cn(formStyles)}>
         <ContactFields />
       </div>
       <FormButtons
-        onCancel={props.onCancel}
+        onCancel={onCancel}
         submitLabel={'Add contact'}
-        className={cn(props.btnStyles)}
+        className={cn(btnStyles)}
       />
     </FormBase>
   );

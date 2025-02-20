@@ -1,14 +1,14 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
 import { createCustomerAction } from '../../actions';
-import { customerSchema, CustomerSchema } from '../../schema';
+import { customerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
 
 const AddCustomerForm = () => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof customerSchema> = {
     schema: customerSchema,
     defaultValues: {
       name: '',
@@ -16,7 +16,7 @@ const AddCustomerForm = () => {
       phone: '',
       address: '',
     },
-    onSubmit: async (values: CustomerSchema) => {
+    onSubmit: async (values) => {
       await createCustomerAction(values);
     },
     onSuccessMessage: 'Customer added successfully',

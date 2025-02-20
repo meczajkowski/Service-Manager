@@ -1,8 +1,15 @@
 import EditContactForm from '@/app/(contacts)/(components)/(forms)/EditContactForm';
 import { getContactAction } from '@/app/(contacts)/actions';
+import { Contact } from '@prisma/client';
 import { notFound } from 'next/navigation';
 
-const page = async ({ params }: { params: { id: string } }) => {
+type Props = {
+  params: {
+    id: Contact['id'];
+  };
+};
+
+const page = async ({ params }: Props) => {
   const contact = await getContactAction(params.id);
 
   if (!contact) {

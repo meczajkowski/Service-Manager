@@ -16,7 +16,11 @@ import { useState } from 'react';
 import DeleteContactDialog from '../DeleteContactDialog';
 import EditContactBtn from '../EditContactBtn';
 
-const ActionsCell = ({ contact }: { contact: Contact }) => {
+type ActionsCellProps = {
+  contact: Contact;
+};
+
+const ActionsCell = ({ contact }: ActionsCellProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,7 +48,7 @@ const ActionsCell = ({ contact }: { contact: Contact }) => {
   );
 };
 
-export const ContactTableColumns: ColumnDef<Contact>[] = [
+export const contactTableColumns: ColumnDef<Contact>[] = [
   {
     accessorKey: 'name',
     header: 'Name',

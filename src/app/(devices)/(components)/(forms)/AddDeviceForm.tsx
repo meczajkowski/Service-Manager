@@ -1,6 +1,6 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
 import { DeviceModel } from '@prisma/client';
@@ -17,31 +17,38 @@ type Props = {
   onSuccess?: () => void;
 };
 
-const AddDeviceForm = (props: Props) => {
-  const formConfig = {
+const AddDeviceForm = ({
+  values,
+  formStyles,
+  btnStyles,
+  redirectTo,
+  onCancel,
+  onSuccess,
+}: Props) => {
+  const formConfig: FormConfig<typeof deviceSchema> = {
     schema: deviceSchema,
     defaultValues: {
       model: DeviceModel.C224,
       serialNumber: '',
       customerId: '',
-      ...props.values,
-    } as DeviceSchema,
-    onSubmit: async (values: DeviceSchema) => {
+      ...values,
+    },
+    onSubmit: async (values) => {
       await addDeviceAction(values);
-      props.onSuccess?.();
+      onSuccess?.();
     },
     onSuccessMessage: 'Device added successfully',
     onErrorMessage: 'Failed to add device',
-    redirect: props.redirectTo ?? null,
+    redirectTo: redirectTo ?? undefined,
   };
 
   return (
-    <FormBase config={formConfig} className={cn(props.formStyles)}>
+    <FormBase config={formConfig} className={cn(formStyles)}>
       <DeviceFormFields />
       <FormButtons
-        onCancel={props.onCancel}
+        onCancel={onCancel}
         submitLabel={'Add device'}
-        className={cn(props.btnStyles)}
+        className={cn(btnStyles)}
       />
     </FormBase>
   );
