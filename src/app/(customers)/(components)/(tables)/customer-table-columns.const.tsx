@@ -9,18 +9,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Contact } from '@prisma/client';
+import { routes } from '@/routes';
+import { Customer } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
-import { useState } from 'react';
-import DeleteContactDialog from '../DeleteContactDialog';
-import EditContactBtn from '../EditContactBtn';
+import Link from 'next/link';
 
-const ActionsCell = ({ contact }: { contact: Contact }) => {
-  const [open, setOpen] = useState(false);
+type ActionsCellProps = {
+  customer: Customer;
+};
 
+const ActionsCell = ({ customer }: ActionsCellProps) => {
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
@@ -31,20 +32,14 @@ const ActionsCell = ({ contact }: { contact: Contact }) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <EditContactBtn id={contact.id} />
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-          <DeleteContactDialog
-            id={contact.id}
-            onSuccess={() => setOpen(false)}
-          />
+          <Link href={routes.customers.view(customer.id)}>View customer</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export const ContactTableColumns: ColumnDef<Contact>[] = [
+export const customerTableColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -57,9 +52,14 @@ export const ContactTableColumns: ColumnDef<Contact>[] = [
     accessorKey: 'phone',
     header: 'Phone',
   },
-
+  {
+    accessorKey: 'address',
+    header: 'Address',
+  },
   {
     id: 'actions',
-    cell: ({ row }) => <ActionsCell contact={row.original} />,
+    cell: ({ row }) => {
+      return <ActionsCell customer={row.original} />;
+    },
   },
 ];

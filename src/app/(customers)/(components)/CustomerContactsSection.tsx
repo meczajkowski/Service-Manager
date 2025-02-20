@@ -1,7 +1,7 @@
 'use client';
 
 import AddContactForm from '@/app/(contacts)/(components)/(forms)/AddContactForm';
-import { ContactTableColumns } from '@/app/(contacts)/(components)/(tables)/ContactTableColumns';
+import { contactTableColumns } from '@/app/(contacts)/(components)/(tables)/contact-table-columns.const';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { useState } from 'react';
@@ -33,7 +33,7 @@ const CustomerContactsSection = (props: Props) => {
       )}
       {props.customer.contacts.length > 0 ? (
         <DataTable
-          columns={ContactTableColumns}
+          columns={contactTableColumns}
           data={props.customer.contacts}
         />
       ) : (

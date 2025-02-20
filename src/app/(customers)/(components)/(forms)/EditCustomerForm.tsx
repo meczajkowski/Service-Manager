@@ -1,28 +1,28 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { updateCustomerAction } from '../../actions';
-import { customerSchema, CustomerSchema } from '../../schema';
+import { customerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
 
 type Props = {
   customer: Customer;
 };
 
-const EditCustomerForm = (props: Props) => {
-  const formConfig = {
+const EditCustomerForm = ({ customer }: Props) => {
+  const formConfig: FormConfig<typeof customerSchema> = {
     schema: customerSchema,
     defaultValues: {
-      name: props.customer.name,
-      email: props.customer.email ?? '',
-      phone: props.customer.phone ?? '',
-      address: props.customer.address,
+      name: customer.name,
+      email: customer.email ?? '',
+      phone: customer.phone ?? '',
+      address: customer.address,
     },
-    onSubmit: async (values: CustomerSchema) => {
-      await updateCustomerAction(props.customer.id, values);
+    onSubmit: async (values) => {
+      await updateCustomerAction(customer.id, values);
     },
     onSuccessMessage: 'Customer updated successfully',
     onErrorMessage: 'Failed to update customer',

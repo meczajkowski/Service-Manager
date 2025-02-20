@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { routes } from '@/routes';
-import { Device } from '@prisma/client';
+import { Customer, Device } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
@@ -20,7 +20,15 @@ import { useEffect, useState } from 'react';
 import DeleteDeviceDialog from '../DeleteDeviceDialog';
 import EditDeviceBtn from '../EditDeviceBtn';
 
-const CustomerCell = ({ customerId }: { customerId: string | null }) => {
+type ActionsCellProps = {
+  device: Device;
+};
+
+type CustomerCellProps = {
+  customerId: Customer['id'] | null;
+};
+
+const CustomerCell = ({ customerId }: CustomerCellProps) => {
   const [customerName, setCustomerName] = useState<string>('Loading...');
 
   useEffect(() => {
@@ -37,7 +45,7 @@ const CustomerCell = ({ customerId }: { customerId: string | null }) => {
   return <span>{customerName}</span>;
 };
 
-const ActionsCell = ({ device }: { device: Device }) => {
+const ActionsCell = ({ device }: ActionsCellProps) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -79,7 +87,7 @@ const ActionsCell = ({ device }: { device: Device }) => {
   );
 };
 
-export const DeviceTableColumns: ColumnDef<Device>[] = [
+export const deviceTableColumns: ColumnDef<Device>[] = [
   {
     accessorKey: 'serialNumber',
     header: 'Serial number',

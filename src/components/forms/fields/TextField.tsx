@@ -15,20 +15,22 @@ type Props<T extends FieldValues> = {
   placeholder?: string;
   disabled?: boolean;
 };
-const TextField = <T extends FieldValues>(props: Props<T>) => {
+const TextField = <T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  disabled,
+}: Props<T>) => {
   return (
     <FormField
-      control={props.control}
-      name={props.name as Path<T>}
+      control={control}
+      name={name as Path<T>}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{props.label}</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
-              placeholder={props.placeholder}
-              {...field}
-              disabled={props.disabled}
-            />
+            <Input placeholder={placeholder} {...field} disabled={disabled} />
           </FormControl>
           <FormMessage />
         </FormItem>
