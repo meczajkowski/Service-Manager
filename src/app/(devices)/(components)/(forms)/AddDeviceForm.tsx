@@ -17,31 +17,38 @@ type Props = {
   onSuccess?: () => void;
 };
 
-const AddDeviceForm = (props: Props) => {
+const AddDeviceForm = ({
+  values,
+  formStyles,
+  btnStyles,
+  redirectTo,
+  onCancel,
+  onSuccess,
+}: Props) => {
   const formConfig = {
     schema: deviceSchema,
     defaultValues: {
       model: DeviceModel.C224,
       serialNumber: '',
       customerId: '',
-      ...props.values,
+      ...values,
     } as DeviceSchema,
     onSubmit: async (values: DeviceSchema) => {
       await addDeviceAction(values);
-      props.onSuccess?.();
+      onSuccess?.();
     },
     onSuccessMessage: 'Device added successfully',
     onErrorMessage: 'Failed to add device',
-    redirect: props.redirectTo ?? null,
+    redirect: redirectTo ?? null,
   };
 
   return (
-    <FormBase config={formConfig} className={cn(props.formStyles)}>
+    <FormBase config={formConfig} className={cn(formStyles)}>
       <DeviceFormFields />
       <FormButtons
-        onCancel={props.onCancel}
+        onCancel={onCancel}
         submitLabel={'Add device'}
-        className={cn(props.btnStyles)}
+        className={cn(btnStyles)}
       />
     </FormBase>
   );

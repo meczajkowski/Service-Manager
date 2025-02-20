@@ -12,16 +12,16 @@ type Props = {
   device: Device;
 };
 
-const EditDeviceForm = (props: Props) => {
+const EditDeviceForm = ({ device }: Props) => {
   const formConfig = {
     schema: deviceSchema,
     defaultValues: {
-      model: props.device.model,
-      serialNumber: props.device.serialNumber,
-      customerId: props.device.customerId ?? '',
+      model: device.model,
+      serialNumber: device.serialNumber,
+      customerId: device.customerId ?? '',
     } as DeviceSchema,
     onSubmit: async (values: DeviceSchema) => {
-      await updateDeviceAction(props.device.id, values);
+      await updateDeviceAction(device.id, values);
     },
     onSuccessMessage: 'Device updated successfully',
     onErrorMessage: 'Failed to update device',

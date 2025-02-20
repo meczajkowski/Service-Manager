@@ -23,26 +23,33 @@ type Props<T extends FieldValues> = {
   options: { label: string; value: string }[];
 };
 
-const SelectField = <T extends FieldValues>(props: Props<T>) => {
+const SelectField = <T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  disabled,
+  options,
+}: Props<T>) => {
   return (
     <FormField
-      control={props.control}
-      name={props.name as Path<T>}
+      control={control}
+      name={name as Path<T>}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{props.label}</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
-            disabled={props.disabled}
+            disabled={disabled}
           >
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder={props.placeholder} />
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {props.options.map((option) => (
+              {options.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>

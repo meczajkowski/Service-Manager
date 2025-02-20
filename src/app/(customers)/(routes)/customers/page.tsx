@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { AppRoutes } from '@/routes';
 import Link from 'next/link';
-import { CustomerTableColumns } from '../../(components)/(tables)/CustomerTableColumns';
+import { customerTableColumns } from '../../(components)/(tables)/customer-table-columns.const';
 import { getCustomersAction } from '../../actions';
 
 const page = async () => {
@@ -16,7 +16,7 @@ const page = async () => {
         </Button>
       </div>
       {customers.length > 0 ? (
-        <DataTable columns={CustomerTableColumns} data={customers} />
+        <DataTable columns={customerTableColumns} data={customers} />
       ) : (
         <p>No customers found</p>
       )}

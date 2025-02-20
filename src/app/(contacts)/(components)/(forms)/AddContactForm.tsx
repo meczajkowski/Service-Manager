@@ -16,34 +16,41 @@ type Props = {
   onSuccess?: () => void;
 };
 
-const AddContactForm = (props: Props) => {
+const AddContactForm = ({
+  values,
+  formStyles,
+  btnStyles,
+  redirectTo,
+  onCancel,
+  onSuccess,
+}: Props) => {
   const formConfig = {
     schema: contactSchema,
     defaultValues: {
       name: '',
       email: '',
       phone: '',
-      customers: [...(props.values?.customers ?? [])],
-      ...props.values,
+      customers: [...(values?.customers ?? [])],
+      ...values,
     } as ContactSchema,
     onSubmit: async (values: ContactSchema) => {
       await addContactAction(values);
-      props.onSuccess?.();
+      onSuccess?.();
     },
     onSuccessMessage: 'Contact added successfully',
     onErrorMessage: 'Failed to add contact',
-    redirect: props.redirectTo ?? null,
+    redirect: redirectTo ?? null,
   };
 
   return (
     <FormBase config={formConfig}>
-      <div className={cn(props.formStyles)}>
+      <div className={cn(formStyles)}>
         <ContactFields />
       </div>
       <FormButtons
-        onCancel={props.onCancel}
+        onCancel={onCancel}
         submitLabel={'Add contact'}
-        className={cn(props.btnStyles)}
+        className={cn(btnStyles)}
       />
     </FormBase>
   );

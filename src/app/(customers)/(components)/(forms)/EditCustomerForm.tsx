@@ -12,17 +12,17 @@ type Props = {
   customer: Customer;
 };
 
-const EditCustomerForm = (props: Props) => {
+const EditCustomerForm = ({ customer }: Props) => {
   const formConfig = {
     schema: customerSchema,
     defaultValues: {
-      name: props.customer.name,
-      email: props.customer.email ?? '',
-      phone: props.customer.phone ?? '',
-      address: props.customer.address,
+      name: customer.name,
+      email: customer.email ?? '',
+      phone: customer.phone ?? '',
+      address: customer.address,
     },
     onSubmit: async (values: CustomerSchema) => {
-      await updateCustomerAction(props.customer.id, values);
+      await updateCustomerAction(customer.id, values);
     },
     onSuccessMessage: 'Customer updated successfully',
     onErrorMessage: 'Failed to update customer',

@@ -12,18 +12,18 @@ type Props = {
   contact: Contact;
 };
 
-const EditContactForm = (props: Props) => {
+const EditContactForm = ({ contact }: Props) => {
   const router = useRouter();
   const formConfig = {
     schema: contactSchema,
     defaultValues: {
-      ...props.contact,
-      name: props.contact.name,
-      email: props.contact.email,
-      phone: props.contact.phone,
+      ...contact,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
     } as ContactSchema,
     onSubmit: async (values: ContactSchema) => {
-      await updateContactAction(props.contact.id, values);
+      await updateContactAction(contact.id, values);
     },
     onSuccessMessage: 'Contact updated successfully',
     onErrorMessage: 'Failed to update contact',

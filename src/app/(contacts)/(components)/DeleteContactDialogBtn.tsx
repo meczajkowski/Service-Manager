@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { deleteContactAction } from '../actions';
 
@@ -9,6 +10,8 @@ type Props = {
 };
 
 const DeleteContactDialogBtn = ({ id, onSuccess }: Props) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleClick = async () => {
     try {
       await deleteContactAction(id);
@@ -20,7 +23,18 @@ const DeleteContactDialogBtn = ({ id, onSuccess }: Props) => {
     }
   };
 
-  return <button onClick={handleClick}>Delete</button>;
+  return (
+    <button
+      onClick={async () => {
+        setIsDeleting(true);
+        await handleClick();
+        setIsDeleting(false);
+      }}
+      disabled={isDeleting}
+    >
+      {isDeleting ? 'Deleting...' : 'Delete'}
+    </button>
+  );
 };
 
 export default DeleteContactDialogBtn;
