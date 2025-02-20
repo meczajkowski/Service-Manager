@@ -1,10 +1,10 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
 import { addContactAction } from '../../actions';
-import { contactSchema, ContactSchema } from '../../schema';
+import { ContactSchema, contactSchema } from '../../schema';
 import ContactFields from './ContactFields';
 
 type Props = {
@@ -24,7 +24,7 @@ const AddContactForm = ({
   onCancel,
   onSuccess,
 }: Props) => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof contactSchema> = {
     schema: contactSchema,
     defaultValues: {
       name: '',
@@ -32,14 +32,14 @@ const AddContactForm = ({
       phone: '',
       customers: [...(values?.customers ?? [])],
       ...values,
-    } as ContactSchema,
-    onSubmit: async (values: ContactSchema) => {
+    },
+    onSubmit: async (values) => {
       await addContactAction(values);
       onSuccess?.();
     },
     onSuccessMessage: 'Contact added successfully',
     onErrorMessage: 'Failed to add contact',
-    redirect: redirectTo ?? null,
+    redirectTo: redirectTo ?? undefined,
   };
 
   return (

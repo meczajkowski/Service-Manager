@@ -1,6 +1,6 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
 import { DeviceModel } from '@prisma/client';
@@ -25,21 +25,21 @@ const AddDeviceForm = ({
   onCancel,
   onSuccess,
 }: Props) => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof deviceSchema> = {
     schema: deviceSchema,
     defaultValues: {
       model: DeviceModel.C224,
       serialNumber: '',
       customerId: '',
       ...values,
-    } as DeviceSchema,
-    onSubmit: async (values: DeviceSchema) => {
+    },
+    onSubmit: async (values) => {
       await addDeviceAction(values);
       onSuccess?.();
     },
     onSuccessMessage: 'Device added successfully',
     onErrorMessage: 'Failed to add device',
-    redirect: redirectTo ?? null,
+    redirectTo: redirectTo ?? undefined,
   };
 
   return (

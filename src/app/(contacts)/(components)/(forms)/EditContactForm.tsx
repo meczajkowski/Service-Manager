@@ -1,11 +1,11 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { Contact } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { updateContactAction } from '../../actions';
-import { ContactSchema, contactSchema } from '../../schema';
+import { contactSchema } from '../../schema';
 import ContactFields from './ContactFields';
 
 type Props = {
@@ -14,15 +14,15 @@ type Props = {
 
 const EditContactForm = ({ contact }: Props) => {
   const router = useRouter();
-  const formConfig = {
+  const formConfig: FormConfig<typeof contactSchema> = {
     schema: contactSchema,
     defaultValues: {
       ...contact,
-      name: contact.name,
-      email: contact.email,
-      phone: contact.phone,
-    } as ContactSchema,
-    onSubmit: async (values: ContactSchema) => {
+      name: contact.name ?? '',
+      email: contact.email ?? '',
+      phone: contact.phone ?? '',
+    },
+    onSubmit: async (values) => {
       await updateContactAction(contact.id, values);
     },
     onSuccessMessage: 'Contact updated successfully',

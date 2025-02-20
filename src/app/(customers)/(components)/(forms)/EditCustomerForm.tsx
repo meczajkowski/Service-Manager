@@ -1,11 +1,11 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { AppRoutes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { updateCustomerAction } from '../../actions';
-import { customerSchema, CustomerSchema } from '../../schema';
+import { customerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 };
 
 const EditCustomerForm = ({ customer }: Props) => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof customerSchema> = {
     schema: customerSchema,
     defaultValues: {
       name: customer.name,
@@ -21,7 +21,7 @@ const EditCustomerForm = ({ customer }: Props) => {
       phone: customer.phone ?? '',
       address: customer.address,
     },
-    onSubmit: async (values: CustomerSchema) => {
+    onSubmit: async (values) => {
       await updateCustomerAction(customer.id, values);
     },
     onSuccessMessage: 'Customer updated successfully',

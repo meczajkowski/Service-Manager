@@ -1,11 +1,11 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { AppRoutes } from '@/routes';
 import { Device } from '@prisma/client';
 import { updateDeviceAction } from '../../actions';
-import { deviceSchema, DeviceSchema } from '../../schema';
+import { deviceSchema } from '../../schema';
 import DeviceFormFields from './DeviceFormFields';
 
 type Props = {
@@ -13,14 +13,14 @@ type Props = {
 };
 
 const EditDeviceForm = ({ device }: Props) => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof deviceSchema> = {
     schema: deviceSchema,
     defaultValues: {
       model: device.model,
       serialNumber: device.serialNumber,
       customerId: device.customerId ?? '',
-    } as DeviceSchema,
-    onSubmit: async (values: DeviceSchema) => {
+    },
+    onSubmit: async (values) => {
       await updateDeviceAction(device.id, values);
     },
     onSuccessMessage: 'Device updated successfully',
