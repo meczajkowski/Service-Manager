@@ -1,4 +1,4 @@
-import DeviceForm from '@/app/(devices)/(components)/DeviceForm';
+import EditDeviceForm from '@/app/(devices)/(components)/(forms)/EditDeviceForm';
 import { getDeviceBySerialNumber } from '@/services/devices.service';
 import { notFound } from 'next/navigation';
 
@@ -18,7 +18,7 @@ const page = async ({ params }: Props) => {
   return (
     <div className="space-y-8">
       <h1>Edit Device</h1>
-      <DeviceForm device={device} />
+      <EditDeviceForm device={device} />
     </div>
   );
 };

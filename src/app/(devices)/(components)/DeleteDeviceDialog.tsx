@@ -9,21 +9,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 import DeleteDeviceDialogBtn from './DeleteDeviceDialogBtn';
 
 type Props = {
   id: string;
+  onSuccess?: () => void;
 };
 
-const DeleteDeviceDialog = ({ id }: Props) => {
+const DeleteDeviceDialog = ({ id, onSuccess }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <span className="flex cursor-pointer items-center gap-2">
           <Trash className="h-4 w-4 text-destructive" />
-        </Button>
+          <span>Delete</span>
+        </span>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -39,7 +41,7 @@ const DeleteDeviceDialog = ({ id }: Props) => {
           <AlertDialogAction
             className={buttonVariants({ variant: 'destructive' })}
           >
-            <DeleteDeviceDialogBtn id={id} />
+            <DeleteDeviceDialogBtn id={id} onSuccess={onSuccess} />
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

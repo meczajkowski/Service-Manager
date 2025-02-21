@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { AppRoutes } from '@/routes';
+import { DataTable } from '@/components/ui/data-table';
+import { routes } from '@/routes';
 import Link from 'next/link';
-import CustomersList from '../../(components)/CustomersList';
+import { customerTableColumns } from '../../(components)/(tables)/customer-table-columns.const';
 import { getCustomersAction } from '../../actions';
 
 const page = async () => {
@@ -11,11 +12,11 @@ const page = async () => {
       <div className="flex items-center justify-between">
         <h1>Customers</h1>
         <Button asChild>
-          <Link href={AppRoutes.customersNew}>Add Customer</Link>
+          <Link href={routes.customers.new}>Add Customer</Link>
         </Button>
       </div>
       {customers.length > 0 ? (
-        <CustomersList customers={customers} />
+        <DataTable columns={customerTableColumns} data={customers} />
       ) : (
         <p>No customers found</p>
       )}

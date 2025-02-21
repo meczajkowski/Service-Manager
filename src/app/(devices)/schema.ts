@@ -6,6 +6,7 @@ export const deviceSchema = z.object({
     message: 'Model is required',
   }),
   serialNumber: z.string().min(1),
+  customerId: z.string().min(1).optional(),
 });
 
 export type DeviceSchema = z.infer<typeof deviceSchema>;

@@ -5,20 +5,22 @@ import { deleteDeviceAction } from '../actions';
 
 type Props = {
   id: string;
+  onSuccess?: () => void;
 };
 
-const DeleteDeviceDialogBtn = ({ id }: Props) => {
-  const handleDelete = async (id: string) => {
+const DeleteDeviceDialogBtn = ({ id, onSuccess }: Props) => {
+  const handleClick = async () => {
     try {
       await deleteDeviceAction(id);
       toast.success('Device deleted successfully');
+      onSuccess?.();
     } catch (error) {
       toast.error('Failed to delete device');
       console.error('Failed to delete device:', error);
     }
   };
 
-  return <span onClick={() => handleDelete(id)}>Delete device</span>;
+  return <span onClick={handleClick}>Delete</span>;
 };
 
 export default DeleteDeviceDialogBtn;

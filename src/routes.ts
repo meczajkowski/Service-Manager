@@ -1,13 +1,29 @@
-export enum AppRoutes {
-  home = '/',
-  signIn = '/api/auth/signin',
-  signOut = '/api/auth/signout',
-  authError = '/api/auth/error',
-  devices = '/devices',
-  devicesNew = '/devices/new',
-  customers = '/customers',
-  customersNew = '/customers/new',
-}
+export const routes = {
+  home: '/',
+  auth: {
+    signIn: '/api/auth/signin',
+    signOut: '/api/auth/signout',
+    error: '/api/auth/error',
+  },
+  devices: {
+    list: '/devices',
+    new: '/devices/new',
+    edit: (id: string) => `/devices/${id}/edit`,
+    view: (id: string) => `/devices/${id}`,
+  },
+  customers: {
+    list: '/customers',
+    new: '/customers/new',
+    edit: (id: string) => `/customers/${id}/edit`,
+    view: (id: string) => `/customers/${id}`,
+  },
+  contacts: {
+    list: '/contacts',
+    new: '/contacts/new',
+    edit: (id: string) => `/contacts/${id}/edit`,
+    view: (id: string) => `/contacts/${id}`,
+  },
+} as const;
 
-export const PUBLIC_ROUTES = [AppRoutes.signIn, AppRoutes.authError];
-export const DEFAULT_REDIRECT = AppRoutes.home;
+export const PUBLIC_PATHS = [routes.auth.signIn, routes.auth.error] as const;
+export const DEFAULT_REDIRECT = routes.home;

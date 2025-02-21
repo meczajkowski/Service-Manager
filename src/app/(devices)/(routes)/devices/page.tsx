@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { AppRoutes } from '@/routes';
+import { DataTable } from '@/components/ui/data-table';
+import { routes } from '@/routes';
 import Link from 'next/link';
-import DevicesList from '../../(components)/DevicesList';
+import { deviceTableColumns } from '../../(components)/(tables)/device-table-columns.const';
 import { getDevicesAction } from '../../actions';
 
 const page = async () => {
@@ -12,11 +13,11 @@ const page = async () => {
       <div className="flex items-center justify-between">
         <h1>Devices</h1>
         <Button asChild>
-          <Link href={AppRoutes.devicesNew}>Add Device</Link>
+          <Link href={routes.devices.new}>Add Device</Link>
         </Button>
       </div>
       {devices.length > 0 ? (
-        <DevicesList devices={devices} />
+        <DataTable columns={deviceTableColumns} data={devices} />
       ) : (
         <p>No devices found</p>
       )}
