@@ -1,13 +1,13 @@
 'use server';
 
-import { routes } from '@/routes';
 import {
   addDevice,
   deleteDevice,
   getDevices,
   getDeviceWithRelations,
   updateDevice,
-} from '@/services/devices.service';
+} from '@/backend/devices/devices.service';
+import { routes } from '@/routes';
 import { revalidatePath } from 'next/cache';
 import { DevicePayload } from './types';
 

@@ -1,32 +1,36 @@
 'use client';
 
-import FormBase from '@/components/forms/FormBase';
+import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
+import { DeviceDto } from '@/types/device.dto';
+import {
+  ServiceOrderStatus,
+  ServiceOrderWithRelationsDto,
+} from '@/types/service-order.dto';
 import {
   createServiceOrderAction,
   updateServiceOrderAction,
 } from '../../actions';
-import { serviceOrderSchema, ServiceOrderSchema } from '../../schema';
-import { ServiceOrderWithRelations } from '../../types';
+import { serviceOrderSchema } from '../../schema';
 import ServiceOrderFormFields from './ServiceOrderFormFields';
 
 type Props = {
-  deviceId: string;
-  serviceOrder?: ServiceOrderWithRelations;
+  deviceId: DeviceDto['id'];
+  serviceOrder?: ServiceOrderWithRelationsDto;
 };
 
 export const ServiceOrderForm = ({ deviceId, serviceOrder }: Props) => {
-  const formConfig = {
+  const formConfig: FormConfig<typeof serviceOrderSchema> = {
     schema: serviceOrderSchema,
     defaultValues: {
       troubleDescription: serviceOrder?.troubleDescription ?? '',
-      assignedToId: serviceOrder?.assignedToId ?? '',
+      assignedToId: serviceOrder?.assignedTo?.id ?? '',
       deviceId,
       serviceOrderId: serviceOrder?.id ?? '',
-      status: serviceOrder?.status ?? 'PENDING',
+      status: serviceOrder?.status ?? ServiceOrderStatus.PENDING,
     },
-    onSubmit: async (values: ServiceOrderSchema) => {
+    onSubmit: async (values) => {
       if (serviceOrder) {
         await updateServiceOrderAction({
           serviceOrderId: serviceOrder.id,

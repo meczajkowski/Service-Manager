@@ -1,4 +1,4 @@
-import { ServiceStatus } from '@prisma/client';
+import { ServiceOrderStatus } from '@/types/service-order.dto';
 import { z } from 'zod';
 
 export const serviceOrderSchema = z.object({
@@ -9,7 +9,7 @@ export const serviceOrderSchema = z.object({
     .max(1000, 'Description must not exceed 1000 characters'),
   assignedToId: z.string().min(1, 'Assigned to is required'),
   serviceOrderId: z.string().optional(),
-  status: z.nativeEnum(ServiceStatus),
+  status: z.nativeEnum(ServiceOrderStatus),
 });
 
 export type ServiceOrderSchema = z.infer<typeof serviceOrderSchema>;

@@ -1,10 +1,9 @@
 import DeleteCustomerDialog from '@/app/(customers)/(components)/DeleteCustomerDialog';
 import EditCustomerBtn from '@/app/(customers)/(components)/EditCustomerBtn';
-import { CustomerWithRelations } from '@/app/(customers)/types';
-import { Customer } from '@prisma/client';
+import { CustomerDto } from '@/types/customer.dto';
 
 type Props = {
-  customer: CustomerWithRelations | Customer | null;
+  customer: CustomerDto | null;
 };
 
 const CustomerDetails = ({ customer }: Props) => {
