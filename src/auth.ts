@@ -1,7 +1,12 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { DEFAULT_REDIRECT, PUBLIC_PATHS } from './routes';
-import { findUserByEmail } from './services/users.service';
+import { users } from './services/users.service';
+
+export const getCurrentUser = async () => {
+  const session = await auth();
+  return session?.user;
+};
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -14,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        const user = await findUserByEmail(credentials.email as string);
+        const user = await users.getByEmail(credentials.email as string);
 
         if (!user || user.password !== credentials.password) {
           throw new Error('Invalid credentials.');

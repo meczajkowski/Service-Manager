@@ -17,6 +17,25 @@ export const getDevices = async () => {
   return devices;
 };
 
+export const getDeviceWithRelations = async (id: Device['id']) => {
+  const device = await prisma.device.findUnique({
+    where: { id },
+    include: {
+      customer: true,
+      contacts: true,
+      serviceOrders: true,
+    },
+  });
+  return device;
+};
+
+export const getDevice = async (id: Device['id']) => {
+  const device = await prisma.device.findUnique({
+    where: { id },
+  });
+  return device;
+};
+
 export const getDeviceBySerialNumber = async (
   serialNumber: Device['serialNumber'],
 ) => {

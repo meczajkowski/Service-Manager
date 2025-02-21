@@ -1,13 +1,20 @@
 import { prisma } from '../../prisma/prisma';
 
-/**
- * Find a user by email
- * @param email - The email of the user to find
- * @returns The user object
- */
-export const findUserByEmail = async (email: string) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-  return user;
+export const users = {
+  getByEmail: async (email: string) => {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user;
+  },
+  getAll: async () => {
+    const users = await prisma.user.findMany({});
+    return users;
+  },
+  get: async (id: string) => {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    return user;
+  },
 };

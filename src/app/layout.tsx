@@ -36,6 +36,10 @@ const navItems = [
     label: 'Customers',
     href: routes.customers.list,
   },
+  {
+    label: 'Service Orders',
+    href: routes.serviceOrders.list,
+  },
 ];
 
 export default function RootLayout({

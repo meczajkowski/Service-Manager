@@ -70,6 +70,11 @@ const ActionsCell = ({ device }: ActionsCellProps) => {
             </Link>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem>
+          <Link href={routes.serviceOrders.new(device.id)}>
+            Create Service Order
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <EditDeviceBtn serialNumber={device.serialNumber} />

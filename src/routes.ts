@@ -23,6 +23,12 @@ export const routes = {
     edit: (id: string) => `/contacts/${id}/edit`,
     view: (id: string) => `/contacts/${id}`,
   },
+  serviceOrders: {
+    list: '/service-orders',
+    new: (deviceId: string) => `/service-orders/new?deviceId=${deviceId}`,
+    edit: (id: string) => `/service-orders/${id}/edit`,
+    view: (id: string) => `/service-orders/${id}`,
+  },
 } as const;
 
 export const PUBLIC_PATHS = [routes.auth.signIn, routes.auth.error] as const;

@@ -19,13 +19,14 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String?
-  email         String    @unique
+  email         String         @unique
   emailVerified DateTime?
   password      String //should be moved to a separate table and encrypted later
   image         String?
-  role          Role      @default(TECHNICIAN)
+  role          Role           @default(TECHNICIAN)
+  serviceOrders ServiceOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -40,12 +41,13 @@ enum DeviceModel {
 }
 
 model Device {
-  id           String      @id @default(uuid())
-  model        DeviceModel
-  serialNumber String      @unique
-  Customer     Customer?   @relation(fields: [customerId], references: [id]) // A device can have zero or one customer
-  customerId   String? // A device can have zero or one customer
-  contacts     Contact[] // A device can have zero or many contacts
+  id            String         @id @default(uuid())
+  model         DeviceModel
+  serialNumber  String         @unique
+  customer      Customer?      @relation(fields: [customerId], references: [id]) // A device can have zero or one customer
+  customerId    String? // A device can have zero or one customer
+  contacts      Contact[] // A device can have zero or many contacts
+  serviceOrders ServiceOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,6 +73,27 @@ model Contact {
   phone     String?
   customers Customer[] // A contact can have zero or many customers (through devices)
   devices   Device[] // A contact can have zero or many devices
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ServiceStatus {
+  PENDING
+  ISSUED
+  COMPLETED
+  CANCELLED
+}
+
+model ServiceOrder {
+  id                 String        @id @default(uuid())
+  device             Device        @relation(fields: [deviceId], references: [id])
+  deviceId           String
+  troubleDescription String
+  status             ServiceStatus @default(PENDING)
+  assignedTo         User?         @relation(fields: [assignedToId], references: [id])
+  assignedToId       String?
+  completedAt        DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
