@@ -1,6 +1,6 @@
 'use server';
 
-import { serviceOrders } from '@/domains/service-orders/service-order.service';
+import { serviceOrders } from '@/backend/service-orders/service-order.service';
 import { routes } from '@/routes';
 import {
   CreateServiceOrderDto,

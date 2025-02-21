@@ -7,7 +7,7 @@ import {
   getCustomers,
   getCustomerWithRelations,
   updateCustomer,
-} from '@/domains/customers/customers.service';
+} from '@/backend/customers/customers.service';
 import { routes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';

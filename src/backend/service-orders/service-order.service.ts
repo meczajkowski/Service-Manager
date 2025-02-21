@@ -13,8 +13,6 @@
  * @module src/services/service-orders.service
  */
 
-import { authService } from '@/backend/auth/auth.service';
-import { getDevice } from '@/backend/devices/devices.service';
 import { serviceOrdersRepository } from '@/backend/service-orders/service-order.repository';
 import {
   CreateServiceOrderDto,
@@ -23,6 +21,8 @@ import {
   UpdateServiceOrderDto,
 } from '@/types/service-order.dto';
 import { UserRole } from '@/types/user.dto';
+import { authService } from '../auth/auth.service';
+import { getDevice } from '../devices/devices.service';
 
 interface IServiceOrdersService {
   create(data: CreateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;

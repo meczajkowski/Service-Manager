@@ -6,7 +6,7 @@ import {
   getDevices,
   getDeviceWithRelations,
   updateDevice,
-} from '@/domains/devices/devices.service';
+} from '@/backend/devices/devices.service';
 import { routes } from '@/routes';
 import { revalidatePath } from 'next/cache';
 import { DevicePayload } from './types';

@@ -1,5 +1,5 @@
 import { Contact, Customer, Prisma } from '@prisma/client';
-import { prisma } from '../../../prisma/prisma';
+import { prisma } from '../../lib/prisma';
 
 export const contacts = {
   create: async (contact: Prisma.ContactCreateInput) => {

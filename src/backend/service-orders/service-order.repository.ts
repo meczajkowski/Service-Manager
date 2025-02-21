@@ -28,7 +28,7 @@ import {
   ServiceStatus,
   User,
 } from '@prisma/client';
-import { prisma } from '../../../prisma/prisma';
+import { prisma } from '../../lib/prisma';
 
 interface IServiceOrdersRepository {
   create(data: CreateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;

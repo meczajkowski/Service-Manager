@@ -1,7 +1,8 @@
-import { auth } from '@/auth';
-import { authRepository } from '@/domains/auth/auth.repository';
+import { authRepository } from '@/backend/auth/auth.repository';
+import { auth } from '@/lib/auth';
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
-interface AuthService {
+
+interface IAuthService {
   getCurrentUser(): Promise<UserDto | null>;
   requireAuth(): Promise<UserDto>;
   requireRole(role: UserRole): Promise<UserDto>;
@@ -9,7 +10,7 @@ interface AuthService {
   updateUser(userId: string, data: UpdateUserDto): Promise<UserDto>;
 }
 
-export const authService: AuthService = {
+export const authService: IAuthService = {
   async getCurrentUser() {
     const session = await auth();
     if (!session?.user?.email) {
