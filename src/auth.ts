@@ -3,11 +3,6 @@ import Credentials from 'next-auth/providers/credentials';
 import { DEFAULT_REDIRECT, PUBLIC_PATHS } from './routes';
 import { users } from './services/users.service';
 
-export const getCurrentUser = async () => {
-  const session = await auth();
-  return session?.user;
-};
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',

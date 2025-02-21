@@ -1,129 +1,78 @@
-import { Prisma, ServiceStatus } from '@prisma/client';
-import { prisma } from '../../prisma/prisma';
+/**
+ * Service Orders Service
+ *
+ * This module provides a service for managing service orders.
+ * It includes functions for creating, updating, and retrieving service orders
+ * with their associated devices and users.
+ *
+ * This module is used by the server actions to perform service operations.
+ * Do not use ORM directly here. Use the db module instead.
+ * This module should not contain any ORM related logic.
+ * Every method should only accept DTOs and return DTOs.
+ *
+ * @module src/services/service-orders.service
+ */
 
-export const serviceOrders = {
-  create: async (serviceOrder: Prisma.ServiceOrderCreateInput) => {
-    return await prisma.serviceOrder.create({
-      data: serviceOrder,
-    });
-  },
+import { serviceOrdersDb } from '@/db/serviceOrders';
+import {
+  CreateServiceOrderDto,
+  ServiceOrderDto,
+  ServiceOrderWithRelationsDto,
+  UpdateServiceOrderDto,
+} from '@/types/service-order.dto';
+import { UserRole } from '@/types/user.dto';
+import { authService } from './auth.service';
+import { getDevice } from './devices.service';
 
-  get: async ({
-    id,
-    withRelations = false,
-  }: {
-    id: string;
-    withRelations?: boolean;
-  }) => {
-    if (withRelations) {
-      return await prisma.serviceOrder.findUnique({
-        where: { id },
-        include: {
-          device: { include: { customer: true } },
-          assignedTo: true,
-        },
-      });
+interface ServiceOrdersService {
+  create(data: CreateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;
+  get(id: ServiceOrderDto['id']): Promise<ServiceOrderDto>;
+  getWithRelations(
+    id: ServiceOrderWithRelationsDto['id'],
+  ): Promise<ServiceOrderWithRelationsDto>;
+  getAll(): Promise<Array<ServiceOrderDto>>;
+  getAllWithRelations(): Promise<Array<ServiceOrderWithRelationsDto>>;
+  update(data: UpdateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;
+}
+
+export const serviceOrders: ServiceOrdersService = {
+  async create(data) {
+    // Only ADMIN and TECHNICIAN can create service orders
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    const device = await getDevice(data.deviceId);
+    if (!device) {
+      throw new Error('Device not found');
     }
-
-    return await prisma.serviceOrder.findUnique({
-      where: { id },
-    });
+    return serviceOrdersDb.create(data);
   },
 
-  getAll: async ({
-    withRelations = false,
-  }: { withRelations?: boolean } = {}) => {
-    if (withRelations) {
-      return await prisma.serviceOrder.findMany({
-        include: {
-          device: { include: { customer: true } },
-          assignedTo: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
+  async get(id) {
+    await authService.requireAuth();
+    return serviceOrdersDb.findById(id);
+  },
+
+  async getWithRelations(id) {
+    await authService.requireAuth();
+    return serviceOrdersDb.findByIdWithRelations(id);
+  },
+
+  async getAll() {
+    await authService.requireAuth();
+    return serviceOrdersDb.findAll();
+  },
+
+  async getAllWithRelations() {
+    await authService.requireAuth();
+    return serviceOrdersDb.findAllWithRelations();
+  },
+
+  async update(data) {
+    // Only ADMIN and TECHNICIAN can update service orders
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    const serviceOrder = await this.get(data.serviceOrderId);
+    if (!serviceOrder) {
+      throw new Error('Service order not found');
     }
-
-    return await prisma.serviceOrder.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    return serviceOrdersDb.update(data);
   },
-
-  update: async ({
-    serviceOrderId,
-    troubleDescription,
-    assignedToId,
-    status,
-  }: {
-    serviceOrderId: string;
-    troubleDescription: string;
-    assignedToId: string;
-    status: ServiceStatus;
-  }) => {
-    return await prisma.serviceOrder.update({
-      where: { id: serviceOrderId },
-      data: {
-        troubleDescription,
-        assignedTo: {
-          connect: { id: assignedToId },
-        },
-        status,
-      },
-    });
-  },
-
-  // get: (id: string) => {
-  //   const withoutRelations = async () => {
-  //     return await prisma.serviceOrder.findUnique({
-  //       where: { id },
-  //     });
-  //   };
-
-  //   return Object.assign(withoutRelations, {
-  //     withRelations: async () => {
-  //       return await prisma.serviceOrder.findUnique({
-  //         where: { id },
-  //         include: {
-  //           device: {
-  //             include: {
-  //               customer: true,
-  //             },
-  //           },
-  //           assignedTo: true,
-  //         },
-  //       });
-  //     },
-  //   });
-  // },
-
-  // getAll: async () => {
-  //   const withoutRelations = async () => {
-  //     return await prisma.serviceOrder.findMany({
-  //       orderBy: {
-  //         createdAt: 'desc',
-  //       },
-  //     });
-  //   };
-
-  //   return Object.assign(withoutRelations, {
-  //     withRelations: async () => {
-  //       return await prisma.serviceOrder.findMany({
-  //         include: {
-  //           device: {
-  //             include: {
-  //               customer: true,
-  //             },
-  //           },
-  //           assignedTo: true,
-  //         },
-  //         orderBy: {
-  //           createdAt: 'desc',
-  //         },
-  //       });
-  //     },
-  //   });
-  // },
 };

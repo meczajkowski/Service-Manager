@@ -9,15 +9,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { routes } from '@/routes';
+import { ServiceOrderWithRelationsDto } from '@/types/service-order.dto';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
-import { ServiceOrderWithRelations } from '../../types';
 
 const ActionsCell = ({
   serviceOrder,
 }: {
-  serviceOrder: ServiceOrderWithRelations;
+  serviceOrder: ServiceOrderWithRelationsDto;
 }) => {
   return (
     <DropdownMenu>
@@ -39,7 +39,7 @@ const ActionsCell = ({
   );
 };
 
-export const ServiceOrderTableColumns: ColumnDef<ServiceOrderWithRelations>[] =
+export const ServiceOrderTableColumns: ColumnDef<ServiceOrderWithRelationsDto>[] =
   [
     {
       accessorKey: 'device.serialNumber',
