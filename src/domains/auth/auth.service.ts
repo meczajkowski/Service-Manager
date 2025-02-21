@@ -1,7 +1,6 @@
 import { auth } from '@/auth';
-import { authDb } from '@/db/auth';
+import { authRepository } from '@/domains/auth/auth.repository';
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
-
 interface AuthService {
   getCurrentUser(): Promise<UserDto | null>;
   requireAuth(): Promise<UserDto>;
@@ -58,7 +57,7 @@ export const authService: AuthService = {
       throw new Error('Unauthorized');
     }
 
-    const user = await authDb.updateUser(userId, data);
+    const user = await authRepository.updateUser(userId, data);
     const dto: UserDto = {
       id: user.id,
       name: user.name ?? null,

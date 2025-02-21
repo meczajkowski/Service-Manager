@@ -1,7 +1,7 @@
 'use server';
 
+import { serviceOrders } from '@/domains/service-orders/service-order.service';
 import { routes } from '@/routes';
-import { serviceOrders } from '@/services/service-orders.service';
 import {
   CreateServiceOrderDto,
   ServiceOrderWithRelationsDto,

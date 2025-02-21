@@ -1,4 +1,4 @@
-import { prisma } from '../../prisma/prisma';
+import { prisma } from '../../../prisma/prisma';
 
 export const users = {
   getByEmail: async (email: string) => {

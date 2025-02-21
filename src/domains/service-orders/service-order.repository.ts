@@ -1,16 +1,16 @@
 /**
- * Service Orders Database Operations
+ * Service Orders Repository
  *
- * This module provides database operations for managing service orders.
+ * This module provides repository operations for managing service orders.
  * It includes functions for creating, updating, and retrieving service orders
  * with their associated devices and users.
  *
- * This module is used by the service orders service to perform database operations.
+ * This module is used by the service orders service to perform repository operations.
  * Only the service orders service should use this module.
- * This module is the only module that should be used to perform database operations on service orders.
+ * This module is the only module that should be used to perform repository operations on service orders.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/db/serviceOrders
+ * @module src/repositories/service-order
  */
 
 import {
@@ -28,9 +28,9 @@ import {
   ServiceStatus,
   User,
 } from '@prisma/client';
-import { prisma } from '../../prisma/prisma';
+import { prisma } from '../../../prisma/prisma';
 
-interface ServiceOrdersDb {
+interface IServiceOrdersRepository {
   create(data: CreateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;
   findById(id: ServiceOrderDto['id']): Promise<ServiceOrderDto>;
   findByIdWithRelations(
@@ -99,7 +99,7 @@ const fromPrismaToDtoWithRelations = (
   };
 };
 
-export const serviceOrdersDb: ServiceOrdersDb = {
+export const serviceOrdersRepository: IServiceOrdersRepository = {
   async create(data) {
     const serviceOrder = await prisma.serviceOrder.create({
       data: {

@@ -3,7 +3,7 @@ import { UserDto } from './user.dto';
 
 export enum ServiceOrderStatus {
   PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
+  ISSUED = 'ISSUED',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
 }

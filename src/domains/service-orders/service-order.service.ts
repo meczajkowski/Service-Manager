@@ -13,7 +13,7 @@
  * @module src/services/service-orders.service
  */
 
-import { serviceOrdersDb } from '@/db/serviceOrders';
+import { serviceOrdersRepository } from '@/domains/service-orders/service-order.repository';
 import {
   CreateServiceOrderDto,
   ServiceOrderDto,
@@ -21,10 +21,10 @@ import {
   UpdateServiceOrderDto,
 } from '@/types/service-order.dto';
 import { UserRole } from '@/types/user.dto';
-import { authService } from './auth.service';
-import { getDevice } from './devices.service';
+import { authService } from '../auth/auth.service';
+import { getDevice } from '../devices/devices.service';
 
-interface ServiceOrdersService {
+interface IServiceOrdersService {
   create(data: CreateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;
   get(id: ServiceOrderDto['id']): Promise<ServiceOrderDto>;
   getWithRelations(
@@ -35,7 +35,7 @@ interface ServiceOrdersService {
   update(data: UpdateServiceOrderDto): Promise<ServiceOrderWithRelationsDto>;
 }
 
-export const serviceOrders: ServiceOrdersService = {
+export const serviceOrders: IServiceOrdersService = {
   async create(data) {
     // Only ADMIN and TECHNICIAN can create service orders
     await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
@@ -43,27 +43,27 @@ export const serviceOrders: ServiceOrdersService = {
     if (!device) {
       throw new Error('Device not found');
     }
-    return serviceOrdersDb.create(data);
+    return serviceOrdersRepository.create(data);
   },
 
   async get(id) {
     await authService.requireAuth();
-    return serviceOrdersDb.findById(id);
+    return serviceOrdersRepository.findById(id);
   },
 
   async getWithRelations(id) {
     await authService.requireAuth();
-    return serviceOrdersDb.findByIdWithRelations(id);
+    return serviceOrdersRepository.findByIdWithRelations(id);
   },
 
   async getAll() {
     await authService.requireAuth();
-    return serviceOrdersDb.findAll();
+    return serviceOrdersRepository.findAll();
   },
 
   async getAllWithRelations() {
     await authService.requireAuth();
-    return serviceOrdersDb.findAllWithRelations();
+    return serviceOrdersRepository.findAllWithRelations();
   },
 
   async update(data) {
@@ -73,6 +73,6 @@ export const serviceOrders: ServiceOrdersService = {
     if (!serviceOrder) {
       throw new Error('Service order not found');
     }
-    return serviceOrdersDb.update(data);
+    return serviceOrdersRepository.update(data);
   },
 };

@@ -1,7 +1,7 @@
 'use server';
 
+import { contacts } from '@/domains/contacts/contacts.service';
 import { routes } from '@/routes';
-import { contacts } from '@/services/contacts.service';
 import { Contact, Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { ContactSchema } from './schema';

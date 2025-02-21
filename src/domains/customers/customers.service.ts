@@ -1,5 +1,5 @@
 import { Customer, Prisma } from '@prisma/client';
-import { prisma } from '../../prisma/prisma';
+import { prisma } from '../../../prisma/prisma';
 
 export const createCustomer = async (customer: Prisma.CustomerCreateInput) => {
   const newCustomer = await prisma.customer.create({

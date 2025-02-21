@@ -1,6 +1,5 @@
 'use server';
 
-import { routes } from '@/routes';
 import {
   createCustomer,
   deleteCustomer,
@@ -8,7 +7,8 @@ import {
   getCustomers,
   getCustomerWithRelations,
   updateCustomer,
-} from '@/services/customers.service';
+} from '@/domains/customers/customers.service';
+import { routes } from '@/routes';
 import { Customer } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { CustomerPayload, CustomerWithRelations } from './types';

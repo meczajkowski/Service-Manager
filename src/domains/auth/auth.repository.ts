@@ -1,23 +1,23 @@
 /**
- * Auth Database Operations
+ * Auth Repository
  *
- * This module provides database operations for managing authentication.
+ * This module provides repository operations for managing authentication.
  * It includes functions for finding users by id and email.
  *
- * This module is used by the auth service to perform database operations.
+ * This module is used by the auth service to perform repository operations.
  * Only the auth service should use this module.
- * This module is the only module that should be used to perform database operations on authentication.
+ * This module is the only module that should be used to perform repository operations on authentication.
  * Every method should only accept DTOs and return DTOs.
  *
  *
- * @module src/db/auth
+ * @module src/repositories/auth
  */
 
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
 import { User } from '@prisma/client';
-import { prisma } from '../../prisma/prisma';
+import { prisma } from '../../../prisma/prisma';
 
-interface AuthDb {
+interface IAuthRepository {
   findUserById(id: string): Promise<UserDto>;
   findUserByEmail(email: string): Promise<UserDto>;
   updateUser(id: string, data: UpdateUserDto): Promise<UserDto>;
@@ -33,7 +33,7 @@ const fromPrismaToDto = (user: User): UserDto => ({
   updatedAt: user.updatedAt,
 });
 
-export const authDb: AuthDb = {
+export const authRepository: IAuthRepository = {
   async findUserById(id: string) {
     const user = await prisma.user.findUnique({
       where: { id },
