@@ -13,8 +13,8 @@
  * @module src/repositories/auth
  */
 
-import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
-import { User } from '@prisma/client';
+import { fromPrismaToUserDto } from '@/backend/common/mappers/user.mapper';
+import { UpdateUserDto, UserDto } from '@/types/user.dto';
 import { prisma } from '../../../lib/prisma';
 
 interface IAuthRepository {
@@ -22,16 +22,6 @@ interface IAuthRepository {
   findUserByEmail(email: string): Promise<UserDto>;
   updateUser(id: string, data: UpdateUserDto): Promise<UserDto>;
 }
-
-const fromPrismaToDto = (user: User): UserDto => ({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-  image: user.image,
-  role: user.role as UserRole,
-  createdAt: user.createdAt,
-  updatedAt: user.updatedAt,
-});
 
 export const authRepository: IAuthRepository = {
   async findUserById(id: string) {
@@ -43,7 +33,7 @@ export const authRepository: IAuthRepository = {
       throw new Error('User not found');
     }
 
-    return fromPrismaToDto(user);
+    return fromPrismaToUserDto(user);
   },
 
   async findUserByEmail(email: string) {
@@ -55,7 +45,7 @@ export const authRepository: IAuthRepository = {
       throw new Error('User not found');
     }
 
-    return fromPrismaToDto(user);
+    return fromPrismaToUserDto(user);
   },
 
   async updateUser(id: string, data: UpdateUserDto) {
@@ -64,6 +54,6 @@ export const authRepository: IAuthRepository = {
       data,
     });
 
-    return fromPrismaToDto(user);
+    return fromPrismaToUserDto(user);
   },
 };

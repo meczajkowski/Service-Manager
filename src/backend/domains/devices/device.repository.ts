@@ -1,11 +1,10 @@
+import { fromPrismaToDeviceDto } from '@/backend/common/mappers/device.mapper';
 import { prisma } from '@/lib/prisma';
 import {
   CreateDeviceDto,
   DeviceDto,
-  DeviceModel,
   UpdateDeviceDto,
 } from '@/types/device.dto';
-import { Device } from '@prisma/client';
 
 interface IDeviceRepository {
   getAll: () => Promise<DeviceDto[]>;
@@ -16,15 +15,10 @@ interface IDeviceRepository {
   delete: (id: string) => Promise<void>;
 }
 
-const fromPrismaToDto = (device: Device): DeviceDto => ({
-  ...device,
-  model: device.model as DeviceModel,
-});
-
 export const deviceRepository: IDeviceRepository = {
   getAll: async () => {
     const devices = await prisma.device.findMany();
-    return devices.map(fromPrismaToDto);
+    return devices.map(fromPrismaToDeviceDto);
   },
 
   get: async (id: string) => {
@@ -34,7 +28,7 @@ export const deviceRepository: IDeviceRepository = {
     if (!device) {
       throw new Error('Device not found');
     }
-    return fromPrismaToDto(device);
+    return fromPrismaToDeviceDto(device);
   },
 
   getBySerialNumber: async (serialNumber: string) => {
@@ -44,14 +38,14 @@ export const deviceRepository: IDeviceRepository = {
     if (!device) {
       throw new Error('Device not found');
     }
-    return fromPrismaToDto(device);
+    return fromPrismaToDeviceDto(device);
   },
 
   create: async (data: CreateDeviceDto) => {
     const newDevice = await prisma.device.create({
       data: data,
     });
-    return fromPrismaToDto(newDevice);
+    return fromPrismaToDeviceDto(newDevice);
   },
 
   update: async (data: UpdateDeviceDto) => {
@@ -59,7 +53,7 @@ export const deviceRepository: IDeviceRepository = {
       where: { id: data.id },
       data: data,
     });
-    return fromPrismaToDto(updatedDevice);
+    return fromPrismaToDeviceDto(updatedDevice);
   },
 
   delete: async (id: string) => {

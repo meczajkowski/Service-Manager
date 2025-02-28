@@ -10,8 +10,7 @@ import { User } from '@prisma/client';
 /**
  * Maps a Prisma User entity to a UserDto
  */
-export const fromPrismaToUserDto = (user: User | null): UserDto | null => {
-  if (!user) return null;
+export const fromPrismaToUserDto = (user: User): UserDto => {
   return {
     id: user.id,
     name: user.name,
