@@ -1,5 +1,5 @@
 import EditDeviceForm from '@/app/(devices)/(components)/(forms)/EditDeviceForm';
-import { getDeviceBySerialNumber } from '@/services/devices.service';
+import { getDeviceBySerialNumberAction } from '@/app/(devices)/actions';
 import { notFound } from 'next/navigation';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const page = async ({ params }: Props) => {
-  const device = await getDeviceBySerialNumber(params.serialNumber);
+  const device = await getDeviceBySerialNumberAction(params.serialNumber);
 
   if (!device) {
     notFound();

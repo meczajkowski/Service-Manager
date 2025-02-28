@@ -15,7 +15,7 @@
 
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
 import { User } from '@prisma/client';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../../../lib/prisma';
 
 interface IAuthRepository {
   findUserById(id: string): Promise<UserDto>;

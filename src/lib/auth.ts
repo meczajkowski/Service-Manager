@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { users } from '../backend/users/users.service';
+import { users } from '../backend/domains/users/users.service';
 import { DEFAULT_REDIRECT, PUBLIC_PATHS } from '../routes';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

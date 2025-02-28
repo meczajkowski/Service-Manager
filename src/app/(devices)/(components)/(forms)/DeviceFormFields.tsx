@@ -1,5 +1,6 @@
 import SelectField from '@/components/forms/fields/SelectField';
 import TextField from '@/components/forms/fields/TextField';
+import { DeviceSchema } from '@/types/device.dto';
 import { DeviceModel } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
 
@@ -7,7 +8,7 @@ const DeviceFormFields = () => {
   const {
     formState: { isSubmitting },
     control,
-  } = useFormContext();
+  } = useFormContext<DeviceSchema>();
 
   return (
     <>

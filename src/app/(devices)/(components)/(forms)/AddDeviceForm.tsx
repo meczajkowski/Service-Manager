@@ -3,13 +3,12 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
-import { DeviceModel } from '@prisma/client';
-import { addDeviceAction } from '../../actions';
-import { deviceSchema, DeviceSchema } from '../../schema';
+import { DeviceDto, DeviceModel, deviceSchema } from '@/types/device.dto';
+import { createDeviceAction } from '../../actions';
 import DeviceFormFields from './DeviceFormFields';
 
 type Props = {
-  values?: Partial<DeviceSchema>;
+  values?: Partial<DeviceDto>;
   formStyles?: string;
   btnStyles?: string;
   redirectTo?: string;
@@ -34,7 +33,7 @@ const AddDeviceForm = ({
       ...values,
     },
     onSubmit: async (values) => {
-      await addDeviceAction(values);
+      await createDeviceAction(values);
       onSuccess?.();
     },
     onSuccessMessage: 'Device added successfully',

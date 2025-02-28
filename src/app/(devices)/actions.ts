@@ -1,40 +1,63 @@
 'use server';
 
-import {
-  addDevice,
-  deleteDevice,
-  getDevices,
-  getDeviceWithRelations,
-  updateDevice,
-} from '@/backend/devices/devices.service';
+import { devicesService } from '@/backend/domains/devices/device.service';
+import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
-import { revalidatePath } from 'next/cache';
-import { DevicePayload } from './types';
+import { CreateDeviceDto, UpdateDeviceDto } from '@/types/device.dto';
 
-export const addDeviceAction = async (device: DevicePayload) => {
-  const newDevice = await addDevice(device);
-  revalidatePath(routes.devices.list);
-  return newDevice;
+export const createDeviceAction = async (data: CreateDeviceDto) => {
+  return executeAction({
+    fn: () => devicesService.create(data),
+    options: {
+      errorMessage: 'Failed to create device',
+      revalidatePaths: [routes.devices.list],
+    },
+  });
 };
 
 export const getDevicesAction = async () => {
-  const devices = await getDevices();
-  return devices;
+  return executeAction({
+    fn: () => devicesService.getAll(),
+    options: {
+      errorMessage: 'Failed to get devices',
+    },
+  });
 };
 
-export const getDeviceWithRelationsAction = async (id: string) => {
-  const device = await getDeviceWithRelations(id);
-  return device;
+export const getDeviceAction = async (id: string) => {
+  return executeAction({
+    fn: () => devicesService.get(id),
+    options: {
+      errorMessage: 'Failed to get device',
+    },
+  });
 };
 
-export const updateDeviceAction = async (id: string, device: DevicePayload) => {
-  const updatedDevice = await updateDevice(id, device);
-  revalidatePath(routes.devices.list);
-  return updatedDevice;
+export const getDeviceBySerialNumberAction = async (serialNumber: string) => {
+  return executeAction({
+    fn: () => devicesService.getBySerialNumber(serialNumber),
+    options: {
+      errorMessage: 'Failed to get device by serial number',
+    },
+  });
+};
+
+export const updateDeviceAction = async (data: UpdateDeviceDto) => {
+  return executeAction({
+    fn: () => devicesService.update(data),
+    options: {
+      errorMessage: 'Failed to update device',
+      revalidatePaths: [routes.devices.list, routes.devices.view(data.id)],
+    },
+  });
 };
 
 export const deleteDeviceAction = async (id: string) => {
-  const deletedDevice = await deleteDevice(id);
-  revalidatePath(routes.devices.list);
-  return deletedDevice;
+  return executeAction({
+    fn: () => devicesService.delete(id),
+    options: {
+      errorMessage: 'Failed to delete device',
+      revalidatePaths: [routes.devices.list],
+    },
+  });
 };

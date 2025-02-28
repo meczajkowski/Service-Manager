@@ -3,13 +3,12 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
-import { Device } from '@prisma/client';
+import { DeviceDto, deviceSchema } from '@/types/device.dto';
 import { updateDeviceAction } from '../../actions';
-import { deviceSchema } from '../../schema';
 import DeviceFormFields from './DeviceFormFields';
 
 type Props = {
-  device: Device;
+  device: DeviceDto;
 };
 
 const EditDeviceForm = ({ device }: Props) => {
@@ -21,7 +20,10 @@ const EditDeviceForm = ({ device }: Props) => {
       customerId: device.customerId ?? '',
     },
     onSubmit: async (values) => {
-      await updateDeviceAction(device.id, values);
+      await updateDeviceAction({
+        id: device.id,
+        ...values,
+      });
     },
     onSuccessMessage: 'Device updated successfully',
     onErrorMessage: 'Failed to update device',

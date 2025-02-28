@@ -1,6 +1,7 @@
 import { ServiceOrderForm } from '@/app/(service-orders)/(components)/(forms)/ServiceOrderForm';
 import { getServiceOrderWithRelationsAction } from '@/app/(service-orders)/actions';
 import CustomerDetails from '@/components/CustomerDetails';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: {
@@ -9,17 +10,10 @@ type Props = {
 };
 
 const page = async ({ params }: Props) => {
-  const { data: serviceOrder, error } =
-    await getServiceOrderWithRelationsAction(params.id);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
+  const serviceOrder = await getServiceOrderWithRelationsAction(params.id);
   if (!serviceOrder) {
-    return <div>Service order not found</div>;
+    return notFound();
   }
-
   return (
     <div className="space-y-8">
       <h1>Service Order Details</h1>

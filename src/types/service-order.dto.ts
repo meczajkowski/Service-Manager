@@ -1,4 +1,5 @@
-import { DeviceDto } from './device.dto';
+import { z } from 'zod';
+import { DeviceWithRelationsDto } from './device.dto';
 import { UserDto } from './user.dto';
 
 export enum ServiceOrderStatus {
@@ -8,43 +9,35 @@ export enum ServiceOrderStatus {
   CANCELLED = 'CANCELLED',
 }
 
-// Base DTO with common fields
-interface ServiceOrderBaseDto {
-  troubleDescription: string;
-  assignedToId: string | null;
-  status: ServiceOrderStatus;
-}
+export const serviceOrderSchema = z.object({
+  deviceId: z.string().min(1, 'Device is required'),
+  troubleDescription: z
+    .string()
+    .min(10, 'Description must be at least 10 characters')
+    .max(1000, 'Description must not exceed 1000 characters'),
+  assignedToId: z.string().nullable(),
+  status: z.nativeEnum(ServiceOrderStatus),
+});
+export type ServiceOrderSchema = z.infer<typeof serviceOrderSchema>;
 
 // DTO for creating a service order
-export interface CreateServiceOrderDto extends ServiceOrderBaseDto {
-  deviceId: string;
-}
+export type CreateServiceOrderDto = Omit<ServiceOrderSchema, 'serviceOrderId'>;
 
 // DTO for updating a service order
-export interface UpdateServiceOrderDto extends ServiceOrderBaseDto {
+export type UpdateServiceOrderDto = ServiceOrderSchema & {
   serviceOrderId: string;
-}
-
-// Full service order response with all relations
-export interface ServiceOrderWithRelationsDto {
-  id: string;
-  troubleDescription: string;
-  status: ServiceOrderStatus;
-  device: DeviceDto;
-  assignedTo: UserDto | null;
-  completedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+};
 
 // Basic service order response without relations
-export interface ServiceOrderDto {
+export type ServiceOrderDto = ServiceOrderSchema & {
   id: string;
-  troubleDescription: string;
-  status: ServiceOrderStatus;
-  deviceId: string;
-  assignedToId: string | null;
   completedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
-}
+};
+
+// Service order with all relations
+export type ServiceOrderWithRelationsDto = ServiceOrderDto & {
+  device: DeviceWithRelationsDto;
+  assignedTo: UserDto | null;
+};

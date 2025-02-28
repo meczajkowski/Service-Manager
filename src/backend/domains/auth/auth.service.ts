@@ -1,11 +1,10 @@
-import { authRepository } from '@/backend/auth/auth.repository';
+import { authRepository } from '@/backend/domains/auth/auth.repository';
 import { auth } from '@/lib/auth';
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
 
 interface IAuthService {
   getCurrentUser(): Promise<UserDto | null>;
   requireAuth(): Promise<UserDto>;
-  requireRole(role: UserRole): Promise<UserDto>;
   requireAnyRole(roles: UserRole[]): Promise<UserDto>;
   updateUser(userId: string, data: UpdateUserDto): Promise<UserDto>;
 }
@@ -32,14 +31,6 @@ export const authService: IAuthService = {
     const user = await this.getCurrentUser();
     if (!user) {
       throw new Error('Unauthorized');
-    }
-    return user;
-  },
-
-  async requireRole(role: UserRole) {
-    const user = await this.requireAuth();
-    if (user.role !== role) {
-      throw new Error('Forbidden');
     }
     return user;
   },

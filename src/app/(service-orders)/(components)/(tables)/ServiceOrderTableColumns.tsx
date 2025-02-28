@@ -1,5 +1,6 @@
 'use client';
 
+import { ServiceOrderTableViewModel } from '@/backend/domains/service-orders/service-order.service';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { routes } from '@/routes';
-import { ServiceOrderWithRelationsDto } from '@/types/service-order.dto';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ import Link from 'next/link';
 const ActionsCell = ({
   serviceOrder,
 }: {
-  serviceOrder: ServiceOrderWithRelationsDto;
+  serviceOrder: ServiceOrderTableViewModel;
 }) => {
   return (
     <DropdownMenu>
@@ -39,18 +39,18 @@ const ActionsCell = ({
   );
 };
 
-export const ServiceOrderTableColumns: ColumnDef<ServiceOrderWithRelationsDto>[] =
+export const ServiceOrderTableColumns: ColumnDef<ServiceOrderTableViewModel>[] =
   [
     {
-      accessorKey: 'device.serialNumber',
+      accessorKey: 'deviceSerialNumber',
       header: 'Device Serial Number',
     },
     {
-      accessorKey: 'device.customer.name',
+      accessorKey: 'customerName',
       header: 'Customer',
       cell: ({ row }) => {
         const serviceOrder = row.original;
-        return <span>{serviceOrder.device.customer?.name ?? 'N/A'}</span>;
+        return <span>{serviceOrder.customerName ?? 'N/A'}</span>;
       },
     },
     {
@@ -62,11 +62,11 @@ export const ServiceOrderTableColumns: ColumnDef<ServiceOrderWithRelationsDto>[]
       header: 'Status',
     },
     {
-      accessorKey: 'assignedTo.name',
+      accessorKey: 'assignedToName',
       header: 'Assigned To',
       cell: ({ row }) => {
         const serviceOrder = row.original;
-        return <span>{serviceOrder.assignedTo?.name ?? 'Unassigned'}</span>;
+        return <span>{serviceOrder.assignedToName ?? 'Unassigned'}</span>;
       },
     },
     {

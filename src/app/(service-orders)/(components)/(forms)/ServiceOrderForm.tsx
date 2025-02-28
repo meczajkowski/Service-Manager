@@ -3,21 +3,20 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
-import { DeviceDto } from '@/types/device.dto';
 import {
+  ServiceOrderDto,
+  serviceOrderSchema,
   ServiceOrderStatus,
-  ServiceOrderWithRelationsDto,
 } from '@/types/service-order.dto';
 import {
   createServiceOrderAction,
   updateServiceOrderAction,
 } from '../../actions';
-import { serviceOrderSchema } from '../../schema';
 import ServiceOrderFormFields from './ServiceOrderFormFields';
 
 type Props = {
-  deviceId: DeviceDto['id'];
-  serviceOrder?: ServiceOrderWithRelationsDto;
+  deviceId: string;
+  serviceOrder?: ServiceOrderDto;
 };
 
 export const ServiceOrderForm = ({ deviceId, serviceOrder }: Props) => {
@@ -25,15 +24,15 @@ export const ServiceOrderForm = ({ deviceId, serviceOrder }: Props) => {
     schema: serviceOrderSchema,
     defaultValues: {
       troubleDescription: serviceOrder?.troubleDescription ?? '',
-      assignedToId: serviceOrder?.assignedTo?.id ?? '',
+      assignedToId: serviceOrder?.assignedToId ?? null,
       deviceId,
-      serviceOrderId: serviceOrder?.id ?? '',
       status: serviceOrder?.status ?? ServiceOrderStatus.PENDING,
     },
     onSubmit: async (values) => {
       if (serviceOrder) {
         await updateServiceOrderAction({
           serviceOrderId: serviceOrder.id,
+          deviceId,
           troubleDescription: values.troubleDescription,
           assignedToId: values.assignedToId,
           status: values.status,
