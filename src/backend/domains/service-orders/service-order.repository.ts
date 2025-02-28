@@ -13,6 +13,8 @@
  * @module src/repositories/service-order
  */
 
+import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';
+import { IBaseRepository } from '@/backend/common/interfaces/repository.interface';
 import {
   fromPrismaToServiceOrderDto,
   fromPrismaToServiceOrderWithRelationsDto,
@@ -25,93 +27,148 @@ import {
 } from '@/types/service-order.dto';
 import { prisma } from '../../../lib/prisma';
 
-interface IServiceOrdersRepository {
-  create(data: CreateServiceOrderDto): Promise<ServiceOrderDto>;
-  findById(id: string): Promise<ServiceOrderDto | null>;
+/**
+ * Interface for the service orders repository
+ * Extends the base repository interface with service order-specific methods
+ */
+interface IServiceOrdersRepository
+  extends IBaseRepository<
+    ServiceOrderDto,
+    CreateServiceOrderDto,
+    UpdateServiceOrderDto
+  > {
+  /**
+   * Finds a service order by ID with relations
+   * @param id - The ID of the service order to find
+   * @returns The service order with relations or null if not found
+   */
   findByIdWithRelations(
     id: string,
   ): Promise<ServiceOrderWithRelationsDto | null>;
-  findAll(): Promise<ServiceOrderDto[]>;
+
+  /**
+   * Finds all service orders with relations
+   * @returns An array of service orders with relations
+   */
   findAllWithRelations(): Promise<ServiceOrderWithRelationsDto[]>;
-  update(data: UpdateServiceOrderDto): Promise<ServiceOrderDto>;
 }
 
 export const serviceOrdersRepository: IServiceOrdersRepository = {
   async create(data) {
-    const serviceOrder = await prisma.serviceOrder.create({
-      data: {
-        troubleDescription: data.troubleDescription,
-        status: data.status,
-        deviceId: data.deviceId,
-        assignedToId: data.assignedToId,
-      },
-    });
+    return executeRepositoryOperation(async () => {
+      const serviceOrder = await prisma.serviceOrder.create({
+        data: {
+          troubleDescription: data.troubleDescription,
+          status: data.status,
+          deviceId: data.deviceId,
+          assignedToId: data.assignedToId,
+        },
+      });
 
-    return fromPrismaToServiceOrderDto(serviceOrder);
+      return fromPrismaToServiceOrderDto(serviceOrder);
+    }, 'Failed to create service order');
   },
 
   async findById(id) {
-    const serviceOrder = await prisma.serviceOrder.findUnique({
-      where: { id },
-    });
+    return executeRepositoryOperation(async () => {
+      const serviceOrder = await prisma.serviceOrder.findUnique({
+        where: { id },
+      });
 
-    if (!serviceOrder) {
-      return null;
-    }
+      if (!serviceOrder) {
+        return null;
+      }
 
-    return fromPrismaToServiceOrderDto(serviceOrder);
+      return fromPrismaToServiceOrderDto(serviceOrder);
+    }, `Failed to find service order with ID ${id}`);
   },
 
   async findByIdWithRelations(id) {
-    const serviceOrder = await prisma.serviceOrder.findUnique({
-      where: { id },
-      include: {
-        device: {
-          include: {
-            customer: true,
+    return executeRepositoryOperation(async () => {
+      const serviceOrder = await prisma.serviceOrder.findUnique({
+        where: { id },
+        include: {
+          device: {
+            include: {
+              customer: true,
+            },
           },
+          assignedTo: true,
         },
-        assignedTo: true,
-      },
-    });
+      });
 
-    if (!serviceOrder) {
-      return null;
-    }
+      if (!serviceOrder) {
+        return null;
+      }
 
-    return fromPrismaToServiceOrderWithRelationsDto(serviceOrder);
+      return fromPrismaToServiceOrderWithRelationsDto(serviceOrder);
+    }, `Failed to find service order with relations with ID ${id}`);
   },
 
   async findAll() {
-    const serviceOrders = await prisma.serviceOrder.findMany();
-    return serviceOrders.map(fromPrismaToServiceOrderDto);
+    return executeRepositoryOperation(async () => {
+      const serviceOrders = await prisma.serviceOrder.findMany();
+      return serviceOrders.map(fromPrismaToServiceOrderDto);
+    }, 'Failed to find all service orders');
   },
 
   async findAllWithRelations() {
-    const serviceOrders = await prisma.serviceOrder.findMany({
-      include: {
-        device: {
-          include: {
-            customer: true,
+    return executeRepositoryOperation(async () => {
+      const serviceOrders = await prisma.serviceOrder.findMany({
+        include: {
+          device: {
+            include: {
+              customer: true,
+            },
           },
+          assignedTo: true,
         },
-        assignedTo: true,
-      },
-    });
+      });
 
-    return serviceOrders.map(fromPrismaToServiceOrderWithRelationsDto);
+      return serviceOrders.map(fromPrismaToServiceOrderWithRelationsDto);
+    }, 'Failed to find all service orders with relations');
   },
 
-  async update(data) {
-    const serviceOrder = await prisma.serviceOrder.update({
-      where: { id: data.serviceOrderId },
-      data: {
-        troubleDescription: data.troubleDescription,
-        status: data.status,
-        assignedToId: data.assignedToId,
-      },
-    });
+  async update(id, data) {
+    return executeRepositoryOperation(async () => {
+      // Check if service order exists before updating
+      const existingServiceOrder = await prisma.serviceOrder.findUnique({
+        where: { id },
+      });
 
-    return fromPrismaToServiceOrderDto(serviceOrder);
+      if (!existingServiceOrder) {
+        throw new Error(`Service order with ID ${id} not found`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { serviceOrderId, ...updateData } = data;
+      const serviceOrder = await prisma.serviceOrder.update({
+        where: { id },
+        data: {
+          troubleDescription: updateData.troubleDescription,
+          status: updateData.status,
+          assignedToId: updateData.assignedToId,
+        },
+      });
+
+      return fromPrismaToServiceOrderDto(serviceOrder);
+    }, `Failed to update service order with ID ${id}`);
+  },
+
+  async delete(id) {
+    return executeRepositoryOperation(async () => {
+      // Check if service order exists before deleting
+      const existingServiceOrder = await prisma.serviceOrder.findUnique({
+        where: { id },
+      });
+
+      if (!existingServiceOrder) {
+        throw new Error(`Service order with ID ${id} not found`);
+      }
+
+      await prisma.serviceOrder.delete({
+        where: { id },
+      });
+    }, `Failed to delete service order with ID ${id}`);
   },
 };

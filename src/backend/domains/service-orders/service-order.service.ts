@@ -142,6 +142,6 @@ export const serviceOrdersService: IServiceOrdersService = {
     if (!serviceOrder) {
       throw new Error('Service order not found');
     }
-    return serviceOrdersRepository.update(data);
+    return serviceOrdersRepository.update(data.serviceOrderId, data);
   },
 };

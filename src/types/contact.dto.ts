@@ -1,16 +1,29 @@
+import { z } from 'zod';
 import { CustomerDto } from './customer.dto';
-import { DeviceDto } from './device.dto';
 
-export interface ContactDto {
+export const contactSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email is required'),
+  phone: z.string().min(1, 'Phone is required'),
+});
+export type ContactSchema = z.infer<typeof contactSchema>;
+
+// DTO for creating a contact
+export type CreateContactDto = ContactSchema;
+
+// DTO for updating a contact
+export type UpdateContactDto = ContactSchema & {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
+};
+
+// Basic contact response without relations
+export type ContactDto = ContactSchema & {
+  id: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface ContactWithRelationsDto extends ContactDto {
+// Contact with all relations
+export type ContactWithRelationsDto = ContactDto & {
   customers: CustomerDto[];
-  devices: DeviceDto[];
-}
+};

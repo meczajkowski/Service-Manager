@@ -2,6 +2,7 @@
  * Service Order Mappers
  *
  * This module provides functions for mapping between Prisma ServiceOrder entities and DTOs.
+ * Mappers should only be used when we are sure the entity exists.
  */
 
 import { fromPrismaToDeviceWithRelationsDto } from '@/backend/common/mappers/device.mapper';
@@ -26,6 +27,8 @@ type ServiceOrderWithRelations = Prisma.ServiceOrderGetPayload<{
 
 /**
  * Maps a Prisma ServiceOrder entity to a ServiceOrderDto
+ * @param serviceOrder - The Prisma ServiceOrder entity to map
+ * @returns A ServiceOrderDto object
  */
 export const fromPrismaToServiceOrderDto = (
   serviceOrder: ServiceOrder,
@@ -42,6 +45,8 @@ export const fromPrismaToServiceOrderDto = (
 
 /**
  * Maps a Prisma ServiceOrder entity with relations to a ServiceOrderWithRelationsDto
+ * @param serviceOrder - The Prisma ServiceOrder entity with relations to map
+ * @returns A ServiceOrderWithRelationsDto object
  */
 export const fromPrismaToServiceOrderWithRelationsDto = (
   serviceOrder: ServiceOrderWithRelations,
@@ -55,5 +60,7 @@ export const fromPrismaToServiceOrderWithRelationsDto = (
   createdAt: serviceOrder.createdAt,
   updatedAt: serviceOrder.updatedAt,
   device: fromPrismaToDeviceWithRelationsDto(serviceOrder.device),
-  assignedTo: fromPrismaToUserDto(serviceOrder.assignedTo),
+  assignedTo: serviceOrder.assignedTo
+    ? fromPrismaToUserDto(serviceOrder.assignedTo)
+    : null,
 });

@@ -1,45 +1,64 @@
-import { Contact, Customer, Prisma } from '@prisma/client';
-import { prisma } from '../../../lib/prisma';
+/**
+ * Contacts Service
+ *
+ * This module provides service operations for managing contacts.
+ * It includes functions for creating, updating, and retrieving contacts
+ * with their associated customers.
+ *
+ * This module is used by the contacts actions to perform service operations.
+ * Only the contacts actions should use this module.
+ * This module is the only module that should be used to perform service operations on contacts.
+ * Every method should only accept DTOs and return DTOs.
+ *
+ * @module src/services/contacts
+ */
 
-export const contacts = {
-  create: async (contact: Prisma.ContactCreateInput) => {
-    const newContact = await prisma.contact.create({
-      data: contact,
-    });
-    return newContact;
+import { authService } from '@/backend/domains/auth/auth.service';
+import {
+  ContactDto,
+  CreateContactDto,
+  UpdateContactDto,
+} from '@/types/contact.dto';
+import { UserRole } from '@/types/user.dto';
+import { contactsRepository } from './contact.repository';
+
+interface IContactsService {
+  create(data: CreateContactDto): Promise<ContactDto>;
+  get(id: string): Promise<ContactDto | null>;
+  getAll(): Promise<ContactDto[]>;
+  getAllForCustomer(customerId: string): Promise<ContactDto[]>;
+  update(data: UpdateContactDto): Promise<ContactDto>;
+  delete(id: string): Promise<void>;
+}
+
+export const contactsService: IContactsService = {
+  async create(data) {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    return contactsRepository.create(data);
   },
-  get: async (id: Contact['id']) => {
-    const contact = await prisma.contact.findUnique({
-      where: { id },
-    });
-    return contact;
+
+  async get(id) {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    return contactsRepository.findById(id);
   },
-  getAll: async () => {
-    const contacts = await prisma.contact.findMany();
-    return contacts;
+
+  async getAll() {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    return contactsRepository.findAll();
   },
-  getAllForCustomer: async (customerId: Customer['id']) => {
-    const contacts = await prisma.contact.findMany({
-      where: {
-        customers: {
-          some: {
-            id: customerId,
-          },
-        },
-      },
-    });
-    return contacts;
+
+  async getAllForCustomer(customerId) {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    return contactsRepository.findAllForCustomer(customerId);
   },
-  update: async (id: Contact['id'], contact: Prisma.ContactUpdateInput) => {
-    const updatedContact = await prisma.contact.update({
-      where: { id },
-      data: contact,
-    });
-    return updatedContact;
+
+  async update(data) {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    return contactsRepository.update(data.id, data);
   },
-  delete: async (id: Contact['id']) => {
-    await prisma.contact.delete({
-      where: { id },
-    });
+
+  async delete(id) {
+    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+    await contactsRepository.delete(id);
   },
 };

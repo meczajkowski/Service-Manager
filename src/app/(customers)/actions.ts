@@ -1,51 +1,64 @@
 'use server';
 
-import {
-  createCustomer,
-  deleteCustomer,
-  getCustomer,
-  getCustomers,
-  getCustomerWithRelations,
-  updateCustomer,
-} from '@/backend/domains/customers/customers.service';
+import { customersService } from '@/backend/domains/customers/customers.service';
+import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
-import { Customer } from '@prisma/client';
-import { revalidatePath } from 'next/cache';
-import { CustomerPayload, CustomerWithRelations } from './types';
+import { UpdateCustomerDto } from '@/types/customer.dto';
+import { CustomerPayload } from './types';
 
 export const createCustomerAction = async (customer: CustomerPayload) => {
-  const newCustomer = await createCustomer(customer);
-  revalidatePath(routes.customers.list);
-  return newCustomer;
+  return executeAction({
+    fn: () => customersService.create(customer),
+    options: {
+      errorMessage: 'Failed to create customer',
+      revalidatePaths: [routes.customers.list],
+    },
+  });
 };
 
 export const getCustomersAction = async () => {
-  const customers = await getCustomers();
-  return customers;
+  return executeAction({
+    fn: () => customersService.getAll(),
+    options: {
+      errorMessage: 'Failed to get customers',
+    },
+  });
 };
 
-export const getCustomerAction = async (id: Customer['id']) => {
-  const customer = await getCustomer(id);
-  return customer;
+export const getCustomerAction = async (id: string) => {
+  return executeAction({
+    fn: () => customersService.get(id),
+    options: {
+      errorMessage: 'Failed to get customer',
+    },
+  });
 };
 
-export const getCustomerWithRelationsAction = async (
-  id: Customer['id'],
-): Promise<CustomerWithRelations | null> => {
-  const customer = await getCustomerWithRelations(id);
-  return customer;
+export const getCustomerWithRelationsAction = async (id: string) => {
+  return executeAction({
+    fn: () => customersService.getWithRelations(id),
+    options: {
+      errorMessage: 'Failed to get customer with relations',
+    },
+  });
 };
 
-export const updateCustomerAction = async (
-  id: Customer['id'],
-  customer: CustomerPayload,
-) => {
-  const updatedCustomer = await updateCustomer(id, customer);
-  revalidatePath(routes.customers.list);
-  return updatedCustomer;
+export const updateCustomerAction = async (data: UpdateCustomerDto) => {
+  return executeAction({
+    fn: () => customersService.update(data),
+    options: {
+      errorMessage: 'Failed to update customer',
+      revalidatePaths: [routes.customers.list],
+    },
+  });
 };
 
-export const deleteCustomerAction = async (id: Customer['id']) => {
-  await deleteCustomer(id);
-  revalidatePath(routes.customers.list);
+export const deleteCustomerAction = async (id: string) => {
+  return executeAction({
+    fn: () => customersService.delete(id),
+    options: {
+      errorMessage: 'Failed to delete customer',
+      revalidatePaths: [routes.customers.list],
+    },
+  });
 };

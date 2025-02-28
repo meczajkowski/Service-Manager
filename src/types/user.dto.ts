@@ -17,6 +17,13 @@ export interface UpdateUserDto {
   email?: string;
 }
 
+export interface CreateUserDto {
+  name: string;
+  email: string;
+  role: UserRole;
+  image?: string;
+}
+
 export interface UserWithRelationsDto extends UserDto {
   serviceOrders: ServiceOrderDto[];
 }
