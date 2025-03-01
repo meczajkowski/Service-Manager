@@ -9,7 +9,7 @@
  * This module is the only module that should be used to perform repository operations on users.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/repositories/user
+ * @module src/backend/domains/users
  */
 
 import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';
@@ -40,16 +40,16 @@ interface IUsersRepository
 
   /**
    * Finds all users
-   * @returns An array of users
+   * @returns An array of users (empty array if none found)
    */
-  findAll(): Promise<UserDto[]>;
+  findAll(): Promise<UserDto[] | []>;
 
   /**
    * Updates a user
    * @param id - The ID of the user to update
    * @param data - The data to update the user with
    * @returns The updated user
-   * @throws Error if user not found
+   * @throws Error if update fails
    */
   update(id: string, data: UpdateUserDto): Promise<UserDto>;
 }

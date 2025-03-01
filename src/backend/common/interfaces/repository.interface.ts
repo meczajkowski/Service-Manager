@@ -3,6 +3,8 @@
  *
  * This module provides base interfaces for repositories.
  * These interfaces help standardize repository implementations.
+ *
+ * @module src/backend/common/interfaces
  */
 
 /**
@@ -16,6 +18,7 @@ export interface IBaseRepository<T, CreateDto, UpdateDto> {
    * Creates a new entity
    * @param data - The data to create the entity with
    * @returns The created entity
+   * @throws Error if creation fails
    */
   create(data: CreateDto): Promise<T>;
 
@@ -28,7 +31,7 @@ export interface IBaseRepository<T, CreateDto, UpdateDto> {
 
   /**
    * Finds all entities
-   * @returns An array of entities
+   * @returns An array of entities (empty array if none found)
    */
   findAll(): Promise<T[]>;
 
@@ -37,12 +40,14 @@ export interface IBaseRepository<T, CreateDto, UpdateDto> {
    * @param id - The ID of the entity to update
    * @param data - The data to update the entity with
    * @returns The updated entity
+   * @throws Error if technical operation fails (not for "not found" cases)
    */
   update(id: string, data: UpdateDto): Promise<T>;
 
   /**
    * Deletes an entity
    * @param id - The ID of the entity to delete
+   * @throws Error if technical operation fails (not for "not found" cases)
    */
   delete(id: string): Promise<void>;
 }

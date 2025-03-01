@@ -10,7 +10,7 @@
  * This module is the only module that should be used to perform repository operations on devices.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/repositories/device
+ * @module src/backend/domains/devices
  */
 
 import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';

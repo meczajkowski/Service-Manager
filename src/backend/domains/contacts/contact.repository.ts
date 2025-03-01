@@ -10,7 +10,7 @@
  * This module is the only module that should be used to perform repository operations on contacts.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/repositories/contact
+ * @module src/backend/domains/contacts
  */
 
 import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';
@@ -32,7 +32,7 @@ interface IContactsRepository
   /**
    * Finds all contacts for a customer
    * @param customerId - The ID of the customer to find contacts for
-   * @returns An array of contacts
+   * @returns An array of contacts (empty array if none found)
    */
   findAllForCustomer(customerId: string): Promise<ContactDto[]>;
 }

@@ -10,7 +10,7 @@
  * This module is the only module that should be used to perform repository operations on service orders.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/repositories/service-order
+ * @module src/backend/domains/service-orders
  */
 
 import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';
@@ -48,7 +48,7 @@ interface IServiceOrdersRepository
 
   /**
    * Finds all service orders with relations
-   * @returns An array of service orders with relations
+   * @returns An array of service orders with relations (empty array if none found)
    */
   findAllWithRelations(): Promise<ServiceOrderWithRelationsDto[]>;
 }

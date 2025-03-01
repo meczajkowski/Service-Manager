@@ -10,7 +10,7 @@
  * This module is the only module that should be used to perform repository operations on customers.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/repositories/customer
+ * @module src/backend/domains/customers
  */
 
 import { executeRepositoryOperation } from '@/backend/common/helpers/repository.helper';
@@ -86,6 +86,9 @@ export const customersRepository: ICustomersRepository = {
   async findAll() {
     return executeRepositoryOperation(async () => {
       const customers = await prisma.customer.findMany();
+      if (customers.length === 0) {
+        return [];
+      }
       return customers.map((customer) => fromPrismaToCustomerDto(customer));
     }, 'Failed to find all customers');
   },
