@@ -57,12 +57,7 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
   async create(data) {
     return executeRepositoryOperation(async () => {
       const serviceOrder = await prisma.serviceOrder.create({
-        data: {
-          troubleDescription: data.troubleDescription,
-          status: data.status,
-          deviceId: data.deviceId,
-          assignedToId: data.assignedToId,
-        },
+        data,
       });
 
       return fromPrismaToServiceOrderDto(serviceOrder);
@@ -108,6 +103,11 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
   async findAll() {
     return executeRepositoryOperation(async () => {
       const serviceOrders = await prisma.serviceOrder.findMany();
+
+      if (serviceOrders.length === 0) {
+        return [];
+      }
+
       return serviceOrders.map(fromPrismaToServiceOrderDto);
     }, 'Failed to find all service orders');
   },
@@ -125,21 +125,16 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
         },
       });
 
+      if (serviceOrders.length === 0) {
+        return [];
+      }
+
       return serviceOrders.map(fromPrismaToServiceOrderWithRelationsDto);
     }, 'Failed to find all service orders with relations');
   },
 
   async update(id, data) {
     return executeRepositoryOperation(async () => {
-      // Check if service order exists before updating
-      const existingServiceOrder = await prisma.serviceOrder.findUnique({
-        where: { id },
-      });
-
-      if (!existingServiceOrder) {
-        throw new Error(`Service order with ID ${id} not found`);
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { serviceOrderId, ...updateData } = data;
       const serviceOrder = await prisma.serviceOrder.update({
@@ -157,15 +152,6 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
 
   async delete(id) {
     return executeRepositoryOperation(async () => {
-      // Check if service order exists before deleting
-      const existingServiceOrder = await prisma.serviceOrder.findUnique({
-        where: { id },
-      });
-
-      if (!existingServiceOrder) {
-        throw new Error(`Service order with ID ${id} not found`);
-      }
-
       await prisma.serviceOrder.delete({
         where: { id },
       });

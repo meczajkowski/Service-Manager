@@ -64,6 +64,11 @@ export const contactsRepository: IContactsRepository = {
   async findAll() {
     return executeRepositoryOperation(async () => {
       const contacts = await prisma.contact.findMany();
+
+      if (contacts.length === 0) {
+        return [];
+      }
+
       return contacts.map((contact) => fromPrismaToContactDto(contact));
     }, 'Failed to find all contacts');
   },
@@ -79,21 +84,17 @@ export const contactsRepository: IContactsRepository = {
           },
         },
       });
+
+      if (contacts.length === 0) {
+        return [];
+      }
+
       return contacts.map((contact) => fromPrismaToContactDto(contact));
     }, `Failed to find contacts for customer with ID ${customerId}`);
   },
 
   async update(id, data) {
     return executeRepositoryOperation(async () => {
-      // Check if contact exists before updating
-      const existingContact = await prisma.contact.findUnique({
-        where: { id },
-      });
-
-      if (!existingContact) {
-        throw new Error(`Contact with ID ${id} not found`);
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
       const contact = await prisma.contact.update({
@@ -107,15 +108,6 @@ export const contactsRepository: IContactsRepository = {
 
   async delete(id) {
     return executeRepositoryOperation(async () => {
-      // Check if contact exists before deleting
-      const existingContact = await prisma.contact.findUnique({
-        where: { id },
-      });
-
-      if (!existingContact) {
-        throw new Error(`Contact with ID ${id} not found`);
-      }
-
       await prisma.contact.delete({
         where: { id },
       });

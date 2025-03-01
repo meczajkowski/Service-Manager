@@ -106,21 +106,17 @@ export const deviceRepository: IDevicesRepository = {
   async findAll() {
     return executeRepositoryOperation(async () => {
       const devices = await prisma.device.findMany();
+
+      if (devices.length === 0) {
+        return [];
+      }
+
       return devices.map((device) => fromPrismaToDeviceDto(device));
     }, 'Failed to find all devices');
   },
 
   async update(id, data) {
     return executeRepositoryOperation(async () => {
-      // Check if device exists before updating
-      const existingDevice = await prisma.device.findUnique({
-        where: { id },
-      });
-
-      if (!existingDevice) {
-        throw new Error(`Device with ID ${id} not found`);
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
       const device = await prisma.device.update({
@@ -134,15 +130,6 @@ export const deviceRepository: IDevicesRepository = {
 
   async delete(id) {
     return executeRepositoryOperation(async () => {
-      // Check if device exists before deleting
-      const existingDevice = await prisma.device.findUnique({
-        where: { id },
-      });
-
-      if (!existingDevice) {
-        throw new Error(`Device with ID ${id} not found`);
-      }
-
       await prisma.device.delete({
         where: { id },
       });

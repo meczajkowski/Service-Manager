@@ -92,15 +92,6 @@ export const customersRepository: ICustomersRepository = {
 
   async update(id, data) {
     return executeRepositoryOperation(async () => {
-      // Check if customer exists before updating
-      const existingCustomer = await prisma.customer.findUnique({
-        where: { id },
-      });
-
-      if (!existingCustomer) {
-        throw new Error(`Customer with ID ${id} not found`);
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
       const customer = await prisma.customer.update({
@@ -114,15 +105,6 @@ export const customersRepository: ICustomersRepository = {
 
   async delete(id) {
     return executeRepositoryOperation(async () => {
-      // Check if customer exists before deleting
-      const existingCustomer = await prisma.customer.findUnique({
-        where: { id },
-      });
-
-      if (!existingCustomer) {
-        throw new Error(`Customer with ID ${id} not found`);
-      }
-
       await prisma.customer.delete({
         where: { id },
       });

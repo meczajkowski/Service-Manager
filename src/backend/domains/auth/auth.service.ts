@@ -1,4 +1,4 @@
-import { authRepository } from '@/backend/domains/auth/auth.repository';
+import { usersRepository } from '@/backend/domains/users/user.repository';
 import { auth } from '@/lib/auth';
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
 
@@ -16,6 +16,17 @@ export const authService: IAuthService = {
       return null;
     }
 
+    // Try to get the user from the database to ensure we have the latest data
+    try {
+      const dbUser = await usersRepository.findById(session.user.id);
+      if (dbUser) {
+        return dbUser;
+      }
+    } catch (error) {
+      console.error('Error fetching user from database:', error);
+    }
+
+    // Fallback to session data if database fetch fails
     const dto: UserDto = {
       id: session.user.id,
       name: session.user.name ?? null,
@@ -49,15 +60,11 @@ export const authService: IAuthService = {
       throw new Error('Unauthorized');
     }
 
-    const user = await authRepository.updateUser(userId, data);
-    const dto: UserDto = {
-      id: user.id,
-      name: user.name ?? null,
-      email: user.email,
-      image: user.image ?? null,
-      role: user.role as UserRole,
-    };
+    const existingUser = await usersRepository.findById(userId);
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
 
-    return dto;
+    return await usersRepository.update(userId, data);
   },
 };
