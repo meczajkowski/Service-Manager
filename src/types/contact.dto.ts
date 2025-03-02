@@ -9,7 +9,9 @@ export const contactSchema = z.object({
 export type ContactSchema = z.infer<typeof contactSchema>;
 
 // DTO for creating a contact
-export type CreateContactDto = ContactSchema;
+export type CreateContactDto = ContactSchema & {
+  customerId: string | null;
+};
 
 // DTO for updating a contact
 export type UpdateContactDto = ContactSchema & {

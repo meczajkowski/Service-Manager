@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { routes } from '@/routes';
-import { Customer, Device } from '@prisma/client';
+import { DeviceDto } from '@/types/device.dto';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
@@ -19,13 +19,12 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DeleteDeviceDialog from '../DeleteDeviceDialog';
 import EditDeviceBtn from '../EditDeviceBtn';
-
 type ActionsCellProps = {
-  device: Device;
+  device: DeviceDto;
 };
 
 type CustomerCellProps = {
-  customerId: Customer['id'] | null;
+  customerId: string | null;
 };
 
 const CustomerCell = ({ customerId }: CustomerCellProps) => {
@@ -87,7 +86,7 @@ const ActionsCell = ({ device }: ActionsCellProps) => {
   );
 };
 
-export const deviceTableColumns: ColumnDef<Device>[] = [
+export const deviceTableColumns: ColumnDef<DeviceDto>[] = [
   {
     accessorKey: 'serialNumber',
     header: 'Serial number',

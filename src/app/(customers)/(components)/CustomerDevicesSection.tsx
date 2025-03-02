@@ -4,11 +4,11 @@ import AddDeviceForm from '@/app/(devices)/(components)/(forms)/AddDeviceForm';
 import { deviceTableColumns } from '@/app/(devices)/(components)/(tables)/device-table-columns.const';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { CustomerWithRelationsDto } from '@/types/customer.dto';
 import { useState } from 'react';
-import { CustomerWithRelations } from '../types';
 
 type Props = {
-  customer: CustomerWithRelations;
+  customer: CustomerWithRelationsDto;
 };
 
 const CustomerDevicesSection = ({ customer }: Props) => {

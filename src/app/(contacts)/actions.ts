@@ -1,6 +1,6 @@
 'use server';
 
-import { contactsService } from '@/backend/domains/contacts/contacts.service';
+import { contactsService } from '@/backend/services';
 import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
 import { CreateContactDto, UpdateContactDto } from '@/types/contact.dto';

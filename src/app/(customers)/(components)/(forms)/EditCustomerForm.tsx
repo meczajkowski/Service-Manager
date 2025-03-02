@@ -3,9 +3,9 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
+import { customerSchema } from '@/types/customer.dto';
 import { Customer } from '@prisma/client';
 import { updateCustomerAction } from '../../actions';
-import { customerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
 
 type Props = {
@@ -22,7 +22,7 @@ const EditCustomerForm = ({ customer }: Props) => {
       address: customer.address,
     },
     onSubmit: async (values) => {
-      await updateCustomerAction(customer.id, values);
+      await updateCustomerAction({ ...values, id: customer.id });
     },
     onSuccessMessage: 'Customer updated successfully',
     onErrorMessage: 'Failed to update customer',

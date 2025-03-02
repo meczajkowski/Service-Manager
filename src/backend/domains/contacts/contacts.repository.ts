@@ -49,8 +49,14 @@ export class ContactsRepository implements IContactsRepository {
 
   async create(data: CreateContactDto): Promise<ContactDto> {
     return executeRepositoryOperation(async () => {
+      const { customerId, ...createData } = data;
       const contact = await this.prisma.contact.create({
-        data,
+        data: {
+          ...createData,
+          customers: {
+            connect: customerId ? [{ id: customerId }] : [],
+          },
+        },
       });
       return fromPrismaToContactDto(contact);
     }, 'Failed to create contact');

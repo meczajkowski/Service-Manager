@@ -1,6 +1,6 @@
 'use server';
 
-import { devicesService } from '@/backend/domains/devices/device.service';
+import { devicesService } from '@/backend/services';
 import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
 import { CreateDeviceDto, UpdateDeviceDto } from '@/types/device.dto';
@@ -33,6 +33,14 @@ export const getDeviceAction = async (id: string) => {
   });
 };
 
+export const getDeviceWithRelationsAction = async (id: string) => {
+  return executeAction({
+    fn: () => devicesService.getWithRelations(id),
+    options: {
+      errorMessage: 'Failed to get device with relations',
+    },
+  });
+};
 export const getDeviceBySerialNumberAction = async (serialNumber: string) => {
   return executeAction({
     fn: () => devicesService.getBySerialNumber(serialNumber),

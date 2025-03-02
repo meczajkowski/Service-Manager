@@ -1,12 +1,11 @@
 'use server';
 
-import { customersService } from '@/backend/domains/customers/customers.service';
+import { customersService } from '@/backend/services';
 import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
-import { UpdateCustomerDto } from '@/types/customer.dto';
-import { CustomerPayload } from './types';
+import { CreateCustomerDto, UpdateCustomerDto } from '@/types/customer.dto';
 
-export const createCustomerAction = async (customer: CustomerPayload) => {
+export const createCustomerAction = async (customer: CreateCustomerDto) => {
   return executeAction({
     fn: () => customersService.create(customer),
     options: {

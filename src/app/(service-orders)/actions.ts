@@ -3,8 +3,8 @@
 import {
   ServiceOrderDetailsViewModel,
   ServiceOrderTableViewModel,
-  serviceOrdersService,
-} from '@/backend/domains/service-orders/service-order.service';
+} from '@/backend/domains/service-orders/service-orders.service';
+import { serviceOrdersService } from '@/backend/services';
 import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
 import {
@@ -80,7 +80,7 @@ export const getServiceOrderDetailsAction = (
 
 export const updateServiceOrderAction = (data: UpdateServiceOrderDto) => {
   return executeAction({
-    fn: () => serviceOrdersService.update(data),
+    fn: () => serviceOrdersService.update(data.serviceOrderId, data),
     options: {
       errorMessage: 'Failed to update service order',
       revalidatePaths: [routes.serviceOrders.list],

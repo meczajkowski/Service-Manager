@@ -6,10 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Contact } from '@prisma/client';
+import { ContactDto } from '@/types/contact.dto';
 
 type Props = {
-  contacts: Contact[];
+  contacts: ContactDto[];
 };
 
 const CustomersContactsList = ({ contacts }: Props) => {

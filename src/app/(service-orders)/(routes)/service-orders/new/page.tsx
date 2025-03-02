@@ -1,5 +1,4 @@
-import { getCustomerAction } from '@/app/(customers)/actions';
-import { getDeviceAction } from '@/app/(devices)/actions';
+import { getDeviceWithRelationsAction } from '@/app/(devices)/actions';
 import { ServiceOrderForm } from '@/app/(service-orders)/(components)/(forms)/ServiceOrderForm';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -16,13 +15,11 @@ const page = async ({ searchParams }: Props) => {
   if (!searchParams.deviceId) {
     return <div>Device ID is required to create a service order</div>;
   }
+  const device = await getDeviceWithRelationsAction(searchParams.deviceId);
 
-  // TODO: refactor
-  const device = await getDeviceAction(searchParams.deviceId);
-  if (!device.customerId) {
-    return <div>Device has no customer</div>;
+  if (!device) {
+    return <div>Device not found</div>;
   }
-  const customer = await getCustomerAction(device.customerId);
 
   return (
     <div className="space-y-8">
@@ -34,30 +31,30 @@ const page = async ({ searchParams }: Props) => {
             <span className="text-sm text-muted-foreground">
               S/N: {device.serialNumber}
             </span>
-            {customer ? (
+            {device.customer ? (
               <div className="my-8 space-y-3">
                 <div>
                   <span className="font-bold">Customer: </span>
-                  {customer.name}
+                  {device.customer.name}
                 </div>
                 <div>
                   <span className="font-bold">Email: </span>
-                  {customer.email}
+                  {device.customer.email}
                 </div>
                 <div>
                   <span className="font-bold">Phone: </span>
-                  {customer.phone}
+                  {device.customer.phone}
                 </div>
                 <div>
                   <span className="font-bold">Address: </span>
-                  {customer.address}
+                  {device.customer.address}
                 </div>
                 <Link
                   className={cn(
                     buttonVariants({ variant: 'outline' }),
                     'max-w-[200px]',
                   )}
-                  href={routes.customers.view(customer.id)}
+                  href={routes.customers.view(device.customer.id)}
                 >
                   View customer
                 </Link>

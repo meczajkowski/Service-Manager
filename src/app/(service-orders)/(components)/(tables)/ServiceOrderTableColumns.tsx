@@ -1,6 +1,6 @@
 'use client';
 
-import { ServiceOrderTableViewModel } from '@/backend/domains/service-orders/service-order.service';
+import { ServiceOrderTableViewModel } from '@/backend/domains/service-orders/service-orders.service';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

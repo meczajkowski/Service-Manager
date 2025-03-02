@@ -1,6 +1,6 @@
 'use server';
 
-import { usersService } from '@/backend/domains/users/users.service';
+import { usersService } from '@/backend/services';
 import { executeAction } from '@/lib/actions';
 
 export const getAllUsers = async () => {
