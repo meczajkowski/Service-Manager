@@ -10,7 +10,7 @@
  * This module is the only module that should be used to perform service operations on devices.
  * Every method should only accept DTOs and return DTOs.
  *
- * @module src/services/devices
+ * @module src/backend/domains/devices
  */
 
 import {
@@ -25,12 +25,14 @@ import { deviceRepository } from './device.repository';
 
 /**
  * Interface for the devices service
+ * Provides methods for managing devices with proper authorization
  */
 interface IDevicesService {
   /**
    * Creates a new device
    * @param data - The data to create the device with
    * @returns The created device
+   * @throws Error if not authorized or if creation fails
    */
   create(data: CreateDeviceDto): Promise<DeviceDto>;
 
@@ -38,6 +40,7 @@ interface IDevicesService {
    * Gets a device by ID
    * @param id - The ID of the device to get
    * @returns The device or null if not found
+   * @throws Error if not authorized
    */
   get(id: string): Promise<DeviceDto | null>;
 
@@ -45,6 +48,7 @@ interface IDevicesService {
    * Gets a device by ID with relations
    * @param id - The ID of the device to get
    * @returns The device with relations or null if not found
+   * @throws Error if not authorized
    */
   getWithRelations(id: string): Promise<DeviceWithRelationsDto | null>;
 
@@ -52,12 +56,14 @@ interface IDevicesService {
    * Gets a device by serial number
    * @param serialNumber - The serial number of the device to get
    * @returns The device or null if not found
+   * @throws Error if not authorized
    */
   getBySerialNumber(serialNumber: string): Promise<DeviceDto | null>;
 
   /**
    * Gets all devices
-   * @returns An array of devices
+   * @returns An array of devices (empty array if none found)
+   * @throws Error if not authorized
    */
   getAll(): Promise<DeviceDto[]>;
 
@@ -65,12 +71,14 @@ interface IDevicesService {
    * Updates a device
    * @param data - The data to update the device with
    * @returns The updated device
+   * @throws Error if not authorized, if device not found, or if update fails
    */
   update(data: UpdateDeviceDto): Promise<DeviceDto>;
 
   /**
    * Deletes a device
    * @param id - The ID of the device to delete
+   * @throws Error if not authorized, if device not found, or if deletion fails
    */
   delete(id: string): Promise<void>;
 }
