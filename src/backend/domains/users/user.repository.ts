@@ -16,13 +16,13 @@ import { executeRepositoryOperation } from '@/backend/common/helpers/repository.
 import { IBaseRepository } from '@/backend/common/interfaces/repository.interface';
 import { fromPrismaToUserDto } from '@/backend/common/mappers/user.mapper';
 import { CreateUserDto, UpdateUserDto, UserDto } from '@/types/user.dto';
-import { prisma } from '../../../lib/prisma';
+import { type PrismaClient } from '@prisma/client';
 
 /**
  * Interface for the users repository
  * Extends the base repository interface with user-specific methods
  */
-interface IUsersRepository
+export interface IUsersRepository
   extends Partial<IBaseRepository<UserDto, CreateUserDto, UpdateUserDto>> {
   /**
    * Finds a user by ID
@@ -54,10 +54,19 @@ interface IUsersRepository
   update(id: string, data: UpdateUserDto): Promise<UserDto>;
 }
 
-export const usersRepository: IUsersRepository = {
-  async findById(id) {
+/**
+ * Users repository implementation
+ */
+export class UsersRepository implements IUsersRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
+  async findById(id: string): Promise<UserDto | null> {
     return executeRepositoryOperation(async () => {
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id },
       });
 
@@ -67,11 +76,11 @@ export const usersRepository: IUsersRepository = {
 
       return fromPrismaToUserDto(user);
     }, `Failed to find user with ID ${id}`);
-  },
+  }
 
-  async findByEmail(email) {
+  async findByEmail(email: string): Promise<UserDto | null> {
     return executeRepositoryOperation(async () => {
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email },
       });
 
@@ -81,11 +90,11 @@ export const usersRepository: IUsersRepository = {
 
       return fromPrismaToUserDto(user);
     }, `Failed to find user with email ${email}`);
-  },
+  }
 
-  async findAll() {
+  async findAll(): Promise<UserDto[] | []> {
     return executeRepositoryOperation(async () => {
-      const users = await prisma.user.findMany();
+      const users = await this.prisma.user.findMany();
 
       if (users.length === 0) {
         return [];
@@ -93,16 +102,16 @@ export const usersRepository: IUsersRepository = {
 
       return users.map((user) => fromPrismaToUserDto(user));
     }, 'Failed to find all users');
-  },
+  }
 
-  async update(id, data) {
+  async update(id: string, data: UpdateUserDto): Promise<UserDto> {
     return executeRepositoryOperation(async () => {
-      const user = await prisma.user.update({
+      const user = await this.prisma.user.update({
         where: { id },
         data,
       });
 
       return fromPrismaToUserDto(user);
     }, `Failed to update user with ID ${id}`);
-  },
-};
+  }
+}

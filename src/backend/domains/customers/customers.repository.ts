@@ -25,13 +25,13 @@ import {
   CustomerWithRelationsDto,
   UpdateCustomerDto,
 } from '@/types/customer.dto';
-import { prisma } from '../../../lib/prisma';
+import { type PrismaClient } from '@prisma/client';
 
 /**
  * Interface for the customers repository
  * Extends the base repository interface with customer-specific methods
  */
-interface ICustomersRepository
+export interface ICustomersRepository
   extends IBaseRepository<CustomerDto, CreateCustomerDto, UpdateCustomerDto> {
   /**
    * Finds a customer by ID with relations
@@ -41,19 +41,28 @@ interface ICustomersRepository
   findByIdWithRelations(id: string): Promise<CustomerWithRelationsDto | null>;
 }
 
-export const customersRepository: ICustomersRepository = {
-  async create(data) {
+/**
+ * Customers repository implementation
+ */
+export class CustomersRepository implements ICustomersRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
+  async create(data: CreateCustomerDto): Promise<CustomerDto> {
     return executeRepositoryOperation(async () => {
-      const customer = await prisma.customer.create({
+      const customer = await this.prisma.customer.create({
         data,
       });
       return fromPrismaToCustomerDto(customer);
     }, 'Failed to create customer');
-  },
+  }
 
-  async findById(id) {
+  async findById(id: string): Promise<CustomerDto | null> {
     return executeRepositoryOperation(async () => {
-      const customer = await prisma.customer.findUnique({
+      const customer = await this.prisma.customer.findUnique({
         where: { id },
       });
 
@@ -63,11 +72,13 @@ export const customersRepository: ICustomersRepository = {
 
       return fromPrismaToCustomerDto(customer);
     }, `Failed to find customer with ID ${id}`);
-  },
+  }
 
-  async findByIdWithRelations(id) {
+  async findByIdWithRelations(
+    id: string,
+  ): Promise<CustomerWithRelationsDto | null> {
     return executeRepositoryOperation(async () => {
-      const customer = await prisma.customer.findUnique({
+      const customer = await this.prisma.customer.findUnique({
         where: { id },
         include: {
           devices: true,
@@ -81,36 +92,38 @@ export const customersRepository: ICustomersRepository = {
 
       return fromPrismaToCustomerWithRelationsDto(customer);
     }, `Failed to find customer with relations with ID ${id}`);
-  },
+  }
 
-  async findAll() {
+  async findAll(): Promise<CustomerDto[]> {
     return executeRepositoryOperation(async () => {
-      const customers = await prisma.customer.findMany();
+      const customers = await this.prisma.customer.findMany();
+
       if (customers.length === 0) {
         return [];
       }
+
       return customers.map((customer) => fromPrismaToCustomerDto(customer));
     }, 'Failed to find all customers');
-  },
+  }
 
-  async update(id, data) {
+  async update(id: string, data: UpdateCustomerDto): Promise<CustomerDto> {
     return executeRepositoryOperation(async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
-      const customer = await prisma.customer.update({
+      const customer = await this.prisma.customer.update({
         where: { id },
         data: updateData,
       });
 
       return fromPrismaToCustomerDto(customer);
     }, `Failed to update customer with ID ${id}`);
-  },
+  }
 
-  async delete(id) {
+  async delete(id: string): Promise<void> {
     return executeRepositoryOperation(async () => {
-      await prisma.customer.delete({
+      await this.prisma.customer.delete({
         where: { id },
       });
     }, `Failed to delete customer with ID ${id}`);
-  },
-};
+  }
+}

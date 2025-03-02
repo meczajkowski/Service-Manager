@@ -25,13 +25,13 @@ import {
   ServiceOrderWithRelationsDto,
   UpdateServiceOrderDto,
 } from '@/types/service-order.dto';
-import { prisma } from '../../../lib/prisma';
+import { type PrismaClient } from '@prisma/client';
 
 /**
  * Interface for the service orders repository
  * Extends the base repository interface with service order-specific methods
  */
-interface IServiceOrdersRepository
+export interface IServiceOrdersRepository
   extends IBaseRepository<
     ServiceOrderDto,
     CreateServiceOrderDto,
@@ -53,20 +53,28 @@ interface IServiceOrdersRepository
   findAllWithRelations(): Promise<ServiceOrderWithRelationsDto[]>;
 }
 
-export const serviceOrdersRepository: IServiceOrdersRepository = {
-  async create(data) {
+/**
+ * Service orders repository implementation
+ */
+export class ServiceOrdersRepository implements IServiceOrdersRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
+  async create(data: CreateServiceOrderDto): Promise<ServiceOrderDto> {
     return executeRepositoryOperation(async () => {
-      const serviceOrder = await prisma.serviceOrder.create({
+      const serviceOrder = await this.prisma.serviceOrder.create({
         data,
       });
-
       return fromPrismaToServiceOrderDto(serviceOrder);
     }, 'Failed to create service order');
-  },
+  }
 
-  async findById(id) {
+  async findById(id: string): Promise<ServiceOrderDto | null> {
     return executeRepositoryOperation(async () => {
-      const serviceOrder = await prisma.serviceOrder.findUnique({
+      const serviceOrder = await this.prisma.serviceOrder.findUnique({
         where: { id },
       });
 
@@ -76,11 +84,13 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
 
       return fromPrismaToServiceOrderDto(serviceOrder);
     }, `Failed to find service order with ID ${id}`);
-  },
+  }
 
-  async findByIdWithRelations(id) {
+  async findByIdWithRelations(
+    id: string,
+  ): Promise<ServiceOrderWithRelationsDto | null> {
     return executeRepositoryOperation(async () => {
-      const serviceOrder = await prisma.serviceOrder.findUnique({
+      const serviceOrder = await this.prisma.serviceOrder.findUnique({
         where: { id },
         include: {
           device: {
@@ -98,23 +108,25 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
 
       return fromPrismaToServiceOrderWithRelationsDto(serviceOrder);
     }, `Failed to find service order with relations with ID ${id}`);
-  },
+  }
 
-  async findAll() {
+  async findAll(): Promise<ServiceOrderDto[]> {
     return executeRepositoryOperation(async () => {
-      const serviceOrders = await prisma.serviceOrder.findMany();
+      const serviceOrders = await this.prisma.serviceOrder.findMany();
 
       if (serviceOrders.length === 0) {
         return [];
       }
 
-      return serviceOrders.map(fromPrismaToServiceOrderDto);
+      return serviceOrders.map((serviceOrder) =>
+        fromPrismaToServiceOrderDto(serviceOrder),
+      );
     }, 'Failed to find all service orders');
-  },
+  }
 
-  async findAllWithRelations() {
+  async findAllWithRelations(): Promise<ServiceOrderWithRelationsDto[]> {
     return executeRepositoryOperation(async () => {
-      const serviceOrders = await prisma.serviceOrder.findMany({
+      const serviceOrders = await this.prisma.serviceOrder.findMany({
         include: {
           device: {
             include: {
@@ -129,32 +141,33 @@ export const serviceOrdersRepository: IServiceOrdersRepository = {
         return [];
       }
 
-      return serviceOrders.map(fromPrismaToServiceOrderWithRelationsDto);
+      return serviceOrders.map((serviceOrder) =>
+        fromPrismaToServiceOrderWithRelationsDto(serviceOrder),
+      );
     }, 'Failed to find all service orders with relations');
-  },
+  }
 
-  async update(id, data) {
+  async update(
+    id: string,
+    data: UpdateServiceOrderDto,
+  ): Promise<ServiceOrderDto> {
     return executeRepositoryOperation(async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { serviceOrderId, ...updateData } = data;
-      const serviceOrder = await prisma.serviceOrder.update({
+      const serviceOrder = await this.prisma.serviceOrder.update({
         where: { id },
-        data: {
-          troubleDescription: updateData.troubleDescription,
-          status: updateData.status,
-          assignedToId: updateData.assignedToId,
-        },
+        data: updateData,
       });
 
       return fromPrismaToServiceOrderDto(serviceOrder);
     }, `Failed to update service order with ID ${id}`);
-  },
+  }
 
-  async delete(id) {
+  async delete(id: string): Promise<void> {
     return executeRepositoryOperation(async () => {
-      await prisma.serviceOrder.delete({
+      await this.prisma.serviceOrder.delete({
         where: { id },
       });
     }, `Failed to delete service order with ID ${id}`);
-  },
-};
+  }
+}

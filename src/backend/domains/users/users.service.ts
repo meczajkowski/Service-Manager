@@ -12,14 +12,14 @@
  * @module src/backend/domains/users
  */
 
-import { authService } from '@/backend/domains/auth/auth.service';
+import { IAuthService } from '@/backend/domains/auth/auth.service';
 import { UserDto, UserRole } from '@/types/user.dto';
-import { usersRepository } from './user.repository';
+import { IUsersRepository } from './user.repository';
 
 /**
  * Interface for the users service
  */
-interface IUsersService {
+export interface IUsersService {
   /**
    * Gets a user by ID
    * @param id - The ID of the user to get
@@ -44,19 +44,30 @@ interface IUsersService {
   getAll(): Promise<UserDto[]>;
 }
 
-export const usersService: IUsersService = {
-  async get(id) {
-    await authService.requireAnyRole([UserRole.ADMIN]);
-    return usersRepository.findById(id);
-  },
+/**
+ * Users service implementation
+ */
+export class UsersService implements IUsersService {
+  private usersRepository: IUsersRepository;
+  private authService: IAuthService;
 
-  async getByEmail(email) {
-    await authService.requireAnyRole([UserRole.ADMIN]);
-    return usersRepository.findByEmail(email);
-  },
+  constructor(usersRepository: IUsersRepository, authService: IAuthService) {
+    this.usersRepository = usersRepository;
+    this.authService = authService;
+  }
 
-  async getAll() {
-    await authService.requireAnyRole([UserRole.ADMIN]);
-    return usersRepository.findAll();
-  },
-};
+  async get(id: string): Promise<UserDto | null> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
+    return this.usersRepository.findById(id);
+  }
+
+  async getByEmail(email: string): Promise<UserDto | null> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
+    return this.usersRepository.findByEmail(email);
+  }
+
+  async getAll(): Promise<UserDto[]> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
+    return this.usersRepository.findAll();
+  }
+}

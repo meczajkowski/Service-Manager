@@ -13,20 +13,20 @@
  * @module src/backend/domains/contacts
  */
 
-import { authService } from '@/backend/domains/auth/auth.service';
+import { IAuthService } from '@/backend/domains/auth/auth.service';
 import {
   ContactDto,
   CreateContactDto,
   UpdateContactDto,
 } from '@/types/contact.dto';
 import { UserRole } from '@/types/user.dto';
-import { contactsRepository } from './contact.repository';
+import { IContactsRepository } from './contacts.repository';
 
 /**
  * Interface for the contacts service
  * Provides methods for managing contacts with proper authorization
  */
-interface IContactsService {
+export interface IContactsService {
   /**
    * Creates a new contact
    * @param data - The data to create the contact with
@@ -74,42 +74,56 @@ interface IContactsService {
   delete(id: string): Promise<void>;
 }
 
-export const contactsService: IContactsService = {
-  async create(data) {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
-    return contactsRepository.create(data);
-  },
+/**
+ * Contacts service implementation
+ */
+export class ContactsService implements IContactsService {
+  private contactsRepository: IContactsRepository;
+  private authService: IAuthService;
 
-  async get(id) {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
-    return contactsRepository.findById(id);
-  },
+  constructor(
+    contactsRepository: IContactsRepository,
+    authService: IAuthService,
+  ) {
+    this.contactsRepository = contactsRepository;
+    this.authService = authService;
+  }
 
-  async getAll() {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
-    return contactsRepository.findAll();
-  },
+  async create(data: CreateContactDto): Promise<ContactDto> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
+    return this.contactsRepository.create(data);
+  }
 
-  async getAllForCustomer(customerId) {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
-    return contactsRepository.findAllForCustomer(customerId);
-  },
+  async get(id: string): Promise<ContactDto | null> {
+    await this.authService.requireAuth();
+    return this.contactsRepository.findById(id);
+  }
 
-  async update(data) {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+  async getAll(): Promise<ContactDto[]> {
+    await this.authService.requireAuth();
+    return this.contactsRepository.findAll();
+  }
+
+  async getAllForCustomer(customerId: string): Promise<ContactDto[]> {
+    await this.authService.requireAuth();
+    return this.contactsRepository.findAllForCustomer(customerId);
+  }
+
+  async update(data: UpdateContactDto): Promise<ContactDto> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
     const contact = await this.get(data.id);
     if (!contact) {
       throw new Error(`Contact with ID ${data.id} not found`);
     }
-    return contactsRepository.update(data.id, data);
-  },
+    return this.contactsRepository.update(data.id, data);
+  }
 
-  async delete(id) {
-    await authService.requireAnyRole([UserRole.ADMIN, UserRole.TECHNICIAN]);
+  async delete(id: string): Promise<void> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
     const contact = await this.get(id);
     if (!contact) {
       throw new Error(`Contact with ID ${id} not found`);
     }
-    await contactsRepository.delete(id);
-  },
-};
+    await this.contactsRepository.delete(id);
+  }
+}

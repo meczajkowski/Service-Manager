@@ -20,14 +20,14 @@ import {
   UpdateDeviceDto,
 } from '@/types/device.dto';
 import { UserRole } from '@/types/user.dto';
-import { authService } from '../auth/auth.service';
-import { deviceRepository } from './device.repository';
+import { IAuthService } from '../auth/auth.service';
+import { IDevicesRepository } from './devices.repository';
 
 /**
  * Interface for the devices service
  * Provides methods for managing devices with proper authorization
  */
-interface IDevicesService {
+export interface IDevicesService {
   /**
    * Creates a new device
    * @param data - The data to create the device with
@@ -81,49 +81,75 @@ interface IDevicesService {
    * @throws Error if not authorized, if device not found, or if deletion fails
    */
   delete(id: string): Promise<void>;
+
+  /**
+   * Checks if a device exists
+   * @param id - The ID of the device to check
+   * @returns True if the device exists, false otherwise
+   */
+  checkDeviceExists(id: string): Promise<boolean>;
 }
 
-export const devicesService: IDevicesService = {
-  async create(data) {
-    await authService.requireAnyRole([UserRole.ADMIN]);
-    return deviceRepository.create(data);
-  },
+/**
+ * Devices service implementation
+ */
+export class DevicesService implements IDevicesService {
+  private devicesRepository: IDevicesRepository;
+  private authService: IAuthService;
 
-  async get(id) {
-    await authService.requireAuth();
-    return deviceRepository.findById(id);
-  },
+  constructor(
+    devicesRepository: IDevicesRepository,
+    authService: IAuthService,
+  ) {
+    this.devicesRepository = devicesRepository;
+    this.authService = authService;
+  }
 
-  async getWithRelations(id) {
-    await authService.requireAuth();
-    return deviceRepository.findByIdWithRelations(id);
-  },
+  async create(data: CreateDeviceDto): Promise<DeviceDto> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
+    return this.devicesRepository.create(data);
+  }
 
-  async getBySerialNumber(serialNumber) {
-    await authService.requireAuth();
-    return deviceRepository.findBySerialNumber(serialNumber);
-  },
+  async get(id: string): Promise<DeviceDto | null> {
+    await this.authService.requireAuth();
+    return this.devicesRepository.findById(id);
+  }
 
-  async getAll() {
-    await authService.requireAuth();
-    return deviceRepository.findAll();
-  },
+  async getWithRelations(id: string): Promise<DeviceWithRelationsDto | null> {
+    await this.authService.requireAuth();
+    return this.devicesRepository.findByIdWithRelations(id);
+  }
 
-  async update(data) {
-    await authService.requireAnyRole([UserRole.ADMIN]);
+  async getBySerialNumber(serialNumber: string): Promise<DeviceDto | null> {
+    await this.authService.requireAuth();
+    return this.devicesRepository.findBySerialNumber(serialNumber);
+  }
+
+  async getAll(): Promise<DeviceDto[]> {
+    await this.authService.requireAuth();
+    return this.devicesRepository.findAll();
+  }
+
+  async update(data: UpdateDeviceDto): Promise<DeviceDto> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
     const device = await this.get(data.id);
     if (!device) {
       throw new Error(`Device with ID ${data.id} not found`);
     }
-    return deviceRepository.update(data.id, data);
-  },
+    return this.devicesRepository.update(data.id, data);
+  }
 
-  async delete(id) {
-    await authService.requireAnyRole([UserRole.ADMIN]);
+  async delete(id: string): Promise<void> {
+    await this.authService.requireAnyRole([UserRole.ADMIN]);
     const device = await this.get(id);
     if (!device) {
       throw new Error(`Device with ID ${id} not found`);
     }
-    await deviceRepository.delete(id);
-  },
-};
+    await this.devicesRepository.delete(id);
+  }
+
+  async checkDeviceExists(id: string): Promise<boolean> {
+    const device = await this.devicesRepository.findById(id);
+    return device !== null;
+  }
+}

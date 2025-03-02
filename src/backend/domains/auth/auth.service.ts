@@ -12,14 +12,14 @@
  * @module src/backend/domains/auth
  */
 
-import { usersRepository } from '@/backend/domains/users/user.repository';
+import { IUsersRepository } from '@/backend/domains/users/user.repository';
 import { auth } from '@/lib/auth';
 import { UpdateUserDto, UserDto, UserRole } from '@/types/user.dto';
 
 /**
  * Interface for the auth service
  */
-interface IAuthService {
+export interface IAuthService {
   /**
    * Gets the current authenticated user
    * @returns The current user or null if not authenticated
@@ -51,62 +51,63 @@ interface IAuthService {
   updateUser(userId: string, data: UpdateUserDto): Promise<UserDto>;
 }
 
-export const authService: IAuthService = {
-  async getCurrentUser() {
-    const session = await auth();
-    if (!session?.user?.email) {
+/**
+ * Auth service implementation
+ */
+export class AuthService implements IAuthService {
+  private usersRepository: IUsersRepository;
+
+  constructor(usersRepository: IUsersRepository) {
+    this.usersRepository = usersRepository;
+  }
+
+  async getCurrentUser(): Promise<UserDto | null> {
+    try {
+      const session = await auth();
+      if (!session || !session.user || !session.user.email) {
+        return null;
+      }
+
+      const user = await this.usersRepository.findByEmail(session.user.email);
+      if (!user) {
+        return null;
+      }
+
+      return user;
+    } catch (error) {
+      console.error('Error getting current user:', error);
       return null;
     }
+  }
 
-    // Try to get the user from the database to ensure we have the latest data
-    try {
-      const dbUser = await usersRepository.findById(session.user.id);
-      if (dbUser) {
-        return dbUser;
-      }
-    } catch (error) {
-      console.error('Error fetching user from database:', error);
-    }
-
-    // Fallback to session data if database fetch fails
-    const dto: UserDto = {
-      id: session.user.id,
-      name: session.user.name ?? null,
-      email: session.user.email,
-      image: session.user.image ?? null,
-      role: session.user.role as UserRole,
-    };
-
-    return dto;
-  },
-
-  async requireAuth() {
+  async requireAuth(): Promise<UserDto> {
     const user = await this.getCurrentUser();
     if (!user) {
-      throw new Error('Unauthorized');
+      throw new Error('Not authenticated');
     }
     return user;
-  },
+  }
 
-  async requireAnyRole(roles: UserRole[]) {
+  async requireAnyRole(roles: UserRole[]): Promise<UserDto> {
     const user = await this.requireAuth();
     if (!roles.includes(user.role)) {
-      throw new Error('Forbidden');
+      throw new Error(`Required role: ${roles.join(' or ')}`);
     }
     return user;
-  },
+  }
 
-  async updateUser(userId: string, data: UpdateUserDto) {
+  async updateUser(userId: string, data: UpdateUserDto): Promise<UserDto> {
     const currentUser = await this.requireAuth();
-    if (currentUser.id !== userId) {
-      throw new Error('Unauthorized');
+
+    if (currentUser.id !== userId && currentUser.role !== UserRole.ADMIN) {
+      throw new Error('Not authorized to update this user');
     }
 
-    const existingUser = await usersRepository.findById(userId);
-    if (!existingUser) {
-      throw new Error('User not found');
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
     }
 
-    return await usersRepository.update(userId, data);
-  },
-};
+    return this.usersRepository.update(userId, data);
+  }
+}

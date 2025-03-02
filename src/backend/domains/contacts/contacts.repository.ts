@@ -21,13 +21,13 @@ import {
   CreateContactDto,
   UpdateContactDto,
 } from '@/types/contact.dto';
-import { prisma } from '../../../lib/prisma';
+import { PrismaClient } from '@prisma/client';
 
 /**
  * Interface for the contacts repository
  * Extends the base repository interface with contact-specific methods
  */
-interface IContactsRepository
+export interface IContactsRepository
   extends IBaseRepository<ContactDto, CreateContactDto, UpdateContactDto> {
   /**
    * Finds all contacts for a customer
@@ -37,19 +37,28 @@ interface IContactsRepository
   findAllForCustomer(customerId: string): Promise<ContactDto[]>;
 }
 
-export const contactsRepository: IContactsRepository = {
-  async create(data) {
+/**
+ * Contacts repository implementation
+ */
+export class ContactsRepository implements IContactsRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
+  async create(data: CreateContactDto): Promise<ContactDto> {
     return executeRepositoryOperation(async () => {
-      const contact = await prisma.contact.create({
+      const contact = await this.prisma.contact.create({
         data,
       });
       return fromPrismaToContactDto(contact);
     }, 'Failed to create contact');
-  },
+  }
 
-  async findById(id) {
+  async findById(id: string): Promise<ContactDto | null> {
     return executeRepositoryOperation(async () => {
-      const contact = await prisma.contact.findUnique({
+      const contact = await this.prisma.contact.findUnique({
         where: { id },
       });
 
@@ -59,11 +68,11 @@ export const contactsRepository: IContactsRepository = {
 
       return fromPrismaToContactDto(contact);
     }, `Failed to find contact with ID ${id}`);
-  },
+  }
 
-  async findAll() {
+  async findAll(): Promise<ContactDto[]> {
     return executeRepositoryOperation(async () => {
-      const contacts = await prisma.contact.findMany();
+      const contacts = await this.prisma.contact.findMany();
 
       if (contacts.length === 0) {
         return [];
@@ -71,11 +80,11 @@ export const contactsRepository: IContactsRepository = {
 
       return contacts.map((contact) => fromPrismaToContactDto(contact));
     }, 'Failed to find all contacts');
-  },
+  }
 
-  async findAllForCustomer(customerId) {
+  async findAllForCustomer(customerId: string): Promise<ContactDto[]> {
     return executeRepositoryOperation(async () => {
-      const contacts = await prisma.contact.findMany({
+      const contacts = await this.prisma.contact.findMany({
         where: {
           customers: {
             some: {
@@ -91,26 +100,26 @@ export const contactsRepository: IContactsRepository = {
 
       return contacts.map((contact) => fromPrismaToContactDto(contact));
     }, `Failed to find contacts for customer with ID ${customerId}`);
-  },
+  }
 
-  async update(id, data) {
+  async update(id: string, data: UpdateContactDto): Promise<ContactDto> {
     return executeRepositoryOperation(async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
-      const contact = await prisma.contact.update({
+      const contact = await this.prisma.contact.update({
         where: { id },
         data: updateData,
       });
 
       return fromPrismaToContactDto(contact);
     }, `Failed to update contact with ID ${id}`);
-  },
+  }
 
-  async delete(id) {
+  async delete(id: string): Promise<void> {
     return executeRepositoryOperation(async () => {
-      await prisma.contact.delete({
+      await this.prisma.contact.delete({
         where: { id },
       });
     }, `Failed to delete contact with ID ${id}`);
-  },
-};
+  }
+}

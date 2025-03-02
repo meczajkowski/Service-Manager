@@ -19,19 +19,19 @@ import {
   fromPrismaToDeviceDto,
   fromPrismaToDeviceWithRelationsDto,
 } from '@/backend/common/mappers/device.mapper';
-import { prisma } from '@/lib/prisma';
 import {
   CreateDeviceDto,
   DeviceDto,
   DeviceWithRelationsDto,
   UpdateDeviceDto,
 } from '@/types/device.dto';
+import { type PrismaClient } from '@prisma/client';
 
 /**
  * Interface for the devices repository
  * Extends the base repository interface with device-specific methods
  */
-interface IDevicesRepository
+export interface IDevicesRepository
   extends IBaseRepository<DeviceDto, CreateDeviceDto, UpdateDeviceDto> {
   /**
    * Finds a device by serial number
@@ -48,19 +48,28 @@ interface IDevicesRepository
   findByIdWithRelations(id: string): Promise<DeviceWithRelationsDto | null>;
 }
 
-export const deviceRepository: IDevicesRepository = {
-  async create(data) {
+/**
+ * Devices repository implementation
+ */
+export class DevicesRepository implements IDevicesRepository {
+  private readonly prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
+  async create(data: CreateDeviceDto): Promise<DeviceDto> {
     return executeRepositoryOperation(async () => {
-      const device = await prisma.device.create({
+      const device = await this.prisma.device.create({
         data,
       });
       return fromPrismaToDeviceDto(device);
     }, 'Failed to create device');
-  },
+  }
 
-  async findById(id) {
+  async findById(id: string): Promise<DeviceDto | null> {
     return executeRepositoryOperation(async () => {
-      const device = await prisma.device.findUnique({
+      const device = await this.prisma.device.findUnique({
         where: { id },
       });
 
@@ -70,11 +79,13 @@ export const deviceRepository: IDevicesRepository = {
 
       return fromPrismaToDeviceDto(device);
     }, `Failed to find device with ID ${id}`);
-  },
+  }
 
-  async findByIdWithRelations(id) {
+  async findByIdWithRelations(
+    id: string,
+  ): Promise<DeviceWithRelationsDto | null> {
     return executeRepositoryOperation(async () => {
-      const device = await prisma.device.findUnique({
+      const device = await this.prisma.device.findUnique({
         where: { id },
         include: {
           customer: true,
@@ -87,11 +98,11 @@ export const deviceRepository: IDevicesRepository = {
 
       return fromPrismaToDeviceWithRelationsDto(device);
     }, `Failed to find device with relations with ID ${id}`);
-  },
+  }
 
-  async findBySerialNumber(serialNumber) {
+  async findBySerialNumber(serialNumber: string): Promise<DeviceDto | null> {
     return executeRepositoryOperation(async () => {
-      const device = await prisma.device.findUnique({
+      const device = await this.prisma.device.findUnique({
         where: { serialNumber },
       });
 
@@ -101,11 +112,11 @@ export const deviceRepository: IDevicesRepository = {
 
       return fromPrismaToDeviceDto(device);
     }, `Failed to find device with serial number ${serialNumber}`);
-  },
+  }
 
-  async findAll() {
+  async findAll(): Promise<DeviceDto[]> {
     return executeRepositoryOperation(async () => {
-      const devices = await prisma.device.findMany();
+      const devices = await this.prisma.device.findMany();
 
       if (devices.length === 0) {
         return [];
@@ -113,26 +124,26 @@ export const deviceRepository: IDevicesRepository = {
 
       return devices.map((device) => fromPrismaToDeviceDto(device));
     }, 'Failed to find all devices');
-  },
+  }
 
-  async update(id, data) {
+  async update(id: string, data: UpdateDeviceDto): Promise<DeviceDto> {
     return executeRepositoryOperation(async () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id: _, ...updateData } = data;
-      const device = await prisma.device.update({
+      const device = await this.prisma.device.update({
         where: { id },
         data: updateData,
       });
 
       return fromPrismaToDeviceDto(device);
     }, `Failed to update device with ID ${id}`);
-  },
+  }
 
-  async delete(id) {
+  async delete(id: string): Promise<void> {
     return executeRepositoryOperation(async () => {
-      await prisma.device.delete({
+      await this.prisma.device.delete({
         where: { id },
       });
     }, `Failed to delete device with ID ${id}`);
-  },
-};
+  }
+}
