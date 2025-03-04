@@ -14,13 +14,18 @@ import {
 } from '@/components/ui/select';
 import { Control, FieldValues, Path } from 'react-hook-form';
 
+export type SelectFormFieldOption = {
+  label: string;
+  value: string;
+};
+
 type Props<T extends FieldValues> = {
   control: Control<T>;
   name: string;
   label: string;
   placeholder?: string;
   disabled?: boolean;
-  options: { label: string; value: string }[];
+  options: SelectFormFieldOption[];
 };
 
 const SelectField = <T extends FieldValues>({

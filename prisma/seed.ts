@@ -1,4 +1,4 @@
-import { DeviceModel, PrismaClient, Role } from '@prisma/client';
+import { DeviceModel, PrismaClient, Role, ServiceStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -59,19 +59,32 @@ async function main() {
     create: {
       model: DeviceModel.C224,
       serialNumber: '1234567890',
-      Customer: {
+      customer: {
         connect: { id: '1' },
       },
     },
   });
 
-  console.log('Database seeded successfully!');
+  const serviceOrder = await prisma.serviceOrder.upsert({
+    where: { id: '1' },
+    update: {},
+    create: {
+      device: { connect: { id: device.id } },
+      troubleDescription:
+        'It is a long description that is used to test the trouble description field.',
+      status: ServiceStatus.ISSUED,
+      assignedTo: { connect: { id: technician.id } },
+    },
+  });
 
   console.log('admin', admin);
   console.log('technician', technician);
   console.log('customer', customer);
   console.log('contact', contact);
   console.log('device', device);
+  console.log('serviceOrder', serviceOrder);
+
+  console.log('Database seeded successfully!');
 }
 main()
   .then(async () => {

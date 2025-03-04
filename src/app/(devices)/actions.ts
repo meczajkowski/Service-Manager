@@ -5,6 +5,7 @@ import {
   addDevice,
   deleteDevice,
   getDevices,
+  getDeviceWithRelations,
   updateDevice,
 } from '@/services/devices.service';
 import { revalidatePath } from 'next/cache';
@@ -19,6 +20,11 @@ export const addDeviceAction = async (device: DevicePayload) => {
 export const getDevicesAction = async () => {
   const devices = await getDevices();
   return devices;
+};
+
+export const getDeviceWithRelationsAction = async (id: string) => {
+  const device = await getDeviceWithRelations(id);
+  return device;
 };
 
 export const updateDeviceAction = async (id: string, device: DevicePayload) => {
