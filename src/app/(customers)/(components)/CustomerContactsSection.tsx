@@ -4,11 +4,11 @@ import AddContactForm from '@/app/(contacts)/(components)/(forms)/AddContactForm
 import { contactTableColumns } from '@/app/(contacts)/(components)/(tables)/contact-table-columns.const';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { CustomerWithRelationsDto } from '@/types/customer.dto';
 import { useState } from 'react';
-import { CustomerWithRelations } from '../types';
 
 type Props = {
-  customer: CustomerWithRelations;
+  customer: CustomerWithRelationsDto;
 };
 
 const CustomerContactsSection = (props: Props) => {
@@ -27,6 +27,7 @@ const CustomerContactsSection = (props: Props) => {
           formStyles="grid grid-cols-2 gap-4 pb-4"
           btnStyles="flex gap-2"
           values={{ customers: [props.customer] }}
+          customerId={props.customer.id}
           onCancel={() => setOpen(false)}
           onSuccess={() => setOpen(false)}
         />

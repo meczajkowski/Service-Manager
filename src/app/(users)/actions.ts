@@ -1,7 +1,13 @@
 'use server';
 
-import { users } from '@/services/users.service';
+import { usersService } from '@/backend/services';
+import { executeAction } from '@/lib/actions';
 
 export const getAllUsers = async () => {
-  return await users.getAll();
+  return executeAction({
+    fn: () => usersService.getAll(),
+    options: {
+      errorMessage: 'Failed to get users',
+    },
+  });
 };

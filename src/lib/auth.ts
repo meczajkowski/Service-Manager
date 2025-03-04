@@ -1,12 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { DEFAULT_REDIRECT, PUBLIC_PATHS } from './routes';
-import { users } from './services/users.service';
-
-export const getCurrentUser = async () => {
-  const session = await auth();
-  return session?.user;
-};
+import { users } from '../backend/domains/users/users.service';
+import { DEFAULT_REDIRECT, PUBLIC_PATHS } from '../routes';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {

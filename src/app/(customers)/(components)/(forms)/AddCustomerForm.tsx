@@ -3,8 +3,8 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { routes } from '@/routes';
+import { customerSchema } from '@/types/customer.dto';
 import { createCustomerAction } from '../../actions';
-import { customerSchema } from '../../schema';
 import CustomerFields from './CustomerFields';
 
 const AddCustomerForm = () => {

@@ -3,10 +3,10 @@ import SelectField, {
   SelectFormFieldOption,
 } from '@/components/forms/fields/SelectField';
 import TextAreaField from '@/components/forms/fields/TextAreaField';
+import { ServiceOrderSchema } from '@/types/service-order.dto';
 import { ServiceStatus } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ServiceOrderSchema } from '../../schema';
 
 const ServiceOrderFormFields = () => {
   const { control } = useFormContext<ServiceOrderSchema>();

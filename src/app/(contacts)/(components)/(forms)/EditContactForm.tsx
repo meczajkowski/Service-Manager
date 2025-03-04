@@ -2,10 +2,10 @@
 
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
+import { contactSchema } from '@/types/contact.dto';
 import { Contact } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { updateContactAction } from '../../actions';
-import { contactSchema } from '../../schema';
 import ContactFields from './ContactFields';
 
 type Props = {
@@ -23,7 +23,7 @@ const EditContactForm = ({ contact }: Props) => {
       phone: contact.phone ?? '',
     },
     onSubmit: async (values) => {
-      await updateContactAction(contact.id, values);
+      await updateContactAction({ ...values, id: contact.id });
     },
     onSuccessMessage: 'Contact updated successfully',
     onErrorMessage: 'Failed to update contact',

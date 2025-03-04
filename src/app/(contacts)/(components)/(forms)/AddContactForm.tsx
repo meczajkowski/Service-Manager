@@ -3,15 +3,17 @@
 import FormBase, { FormConfig } from '@/components/forms/FormBase';
 import FormButtons from '@/components/forms/FormButtons';
 import { cn } from '@/lib/utils';
+import { contactSchema, ContactSchema } from '@/types/contact.dto';
+import { CustomerDto } from '@/types/customer.dto';
 import { addContactAction } from '../../actions';
-import { ContactSchema, contactSchema } from '../../schema';
 import ContactFields from './ContactFields';
 
 type Props = {
-  values?: Partial<ContactSchema>;
+  values?: Partial<ContactSchema> & { customers: CustomerDto[] };
   formStyles?: string;
   btnStyles?: string;
   redirectTo?: string;
+  customerId?: string;
   onCancel?: () => void;
   onSuccess?: () => void;
 };
@@ -23,6 +25,7 @@ const AddContactForm = ({
   redirectTo,
   onCancel,
   onSuccess,
+  customerId,
 }: Props) => {
   const formConfig: FormConfig<typeof contactSchema> = {
     schema: contactSchema,
@@ -30,11 +33,13 @@ const AddContactForm = ({
       name: '',
       email: '',
       phone: '',
-      customers: [...(values?.customers ?? [])],
       ...values,
     },
     onSubmit: async (values) => {
-      await addContactAction(values);
+      await addContactAction({
+        ...values,
+        customerId: customerId ?? null,
+      });
       onSuccess?.();
     },
     onSuccessMessage: 'Contact added successfully',

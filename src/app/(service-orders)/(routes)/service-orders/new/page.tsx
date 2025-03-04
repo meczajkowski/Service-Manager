@@ -15,7 +15,6 @@ const page = async ({ searchParams }: Props) => {
   if (!searchParams.deviceId) {
     return <div>Device ID is required to create a service order</div>;
   }
-
   const device = await getDeviceWithRelationsAction(searchParams.deviceId);
 
   if (!device) {
@@ -36,19 +35,19 @@ const page = async ({ searchParams }: Props) => {
               <div className="my-8 space-y-3">
                 <div>
                   <span className="font-bold">Customer: </span>
-                  {device.customer?.name}
+                  {device.customer.name}
                 </div>
                 <div>
                   <span className="font-bold">Email: </span>
-                  {device.customer?.email}
+                  {device.customer.email}
                 </div>
                 <div>
                   <span className="font-bold">Phone: </span>
-                  {device.customer?.phone}
+                  {device.customer.phone}
                 </div>
                 <div>
                   <span className="font-bold">Address: </span>
-                  {device.customer?.address}
+                  {device.customer.address}
                 </div>
                 <Link
                   className={cn(

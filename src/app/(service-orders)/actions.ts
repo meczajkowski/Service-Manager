@@ -1,127 +1,89 @@
 'use server';
 
-import { getCurrentUser } from '@/auth';
+import {
+  ServiceOrderDetailsViewModel,
+  ServiceOrderTableViewModel,
+} from '@/backend/domains/service-orders/service-orders.service';
+import { serviceOrdersService } from '@/backend/services';
+import { executeAction } from '@/lib/actions';
 import { routes } from '@/routes';
-import { getDevice } from '@/services/devices.service';
-import { serviceOrders } from '@/services/service-orders.service';
-import { users } from '@/services/users.service';
-import { ServiceStatus } from '@prisma/client';
-import { revalidatePath } from 'next/cache';
+import {
+  CreateServiceOrderDto,
+  ServiceOrderDto,
+  ServiceOrderWithRelationsDto,
+  UpdateServiceOrderDto,
+} from '@/types/service-order.dto';
 
-type CreateServiceOrderProps = {
-  deviceId: string;
-  troubleDescription: string;
-  assignedToId: string;
-  status: ServiceStatus;
-};
-
-type GetServiceOrdersProps = {
-  withRelations?: boolean;
-};
-
-type GetServiceOrderProps = {
-  id: string;
-  withRelations?: boolean;
-};
-
-type UpdateServiceOrderProps = {
-  serviceOrderId: string;
-  troubleDescription: string;
-  assignedToId: string;
-  status: ServiceStatus;
-};
-
-export const createServiceOrderAction = async ({
-  deviceId,
-  troubleDescription,
-  assignedToId,
-  status,
-}: CreateServiceOrderProps) => {
-  // get user data from session
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('Unauthorized');
-  }
-
-  const device = await getDevice(deviceId);
-
-  if (!device) {
-    throw new Error('Device not found');
-  }
-
-  // not sure if needed if we have the user in the session
-  const dbUser = await users.get(user.id);
-  if (!dbUser) {
-    throw new Error('User not found in database');
-  }
-
-  const newServiceOrder = await serviceOrders.create({
-    device: {
-      connect: {
-        id: deviceId,
-      },
+// Actions
+export const createServiceOrderAction = (data: CreateServiceOrderDto) => {
+  return executeAction({
+    fn: () => serviceOrdersService.create(data),
+    options: {
+      errorMessage: 'Failed to create service order',
+      revalidatePaths: [routes.serviceOrders.list],
     },
-    troubleDescription,
-    assignedTo: {
-      connect: { id: assignedToId },
+  });
+};
+
+export const getServiceOrdersAction = (): Promise<ServiceOrderDto[]> => {
+  return executeAction({
+    fn: () => serviceOrdersService.getAll(),
+    options: {
+      errorMessage: 'Failed to get service orders',
     },
-    status,
   });
-
-  revalidatePath(routes.serviceOrders.list);
-  return newServiceOrder;
 };
 
-export const getServiceOrdersAction = async ({
-  withRelations = false,
-}: GetServiceOrdersProps) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('Unauthorized');
-  }
-
-  if (withRelations) {
-    return await serviceOrders.getAll({ withRelations });
-  }
-
-  return await serviceOrders.getAll();
-};
-
-export const getServiceOrderAction = async ({
-  id,
-  withRelations = false,
-}: GetServiceOrderProps) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('Unauthorized');
-  }
-
-  return await serviceOrders.get({ id, withRelations });
-};
-
-export const updateServiceOrderAction = async ({
-  serviceOrderId,
-  troubleDescription,
-  assignedToId,
-  status,
-}: UpdateServiceOrderProps) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('Unauthorized');
-  }
-
-  const serviceOrder = await serviceOrders.get({ id: serviceOrderId });
-  if (!serviceOrder) {
-    throw new Error('Service order not found');
-  }
-
-  const updatedServiceOrder = await serviceOrders.update({
-    serviceOrderId,
-    troubleDescription,
-    assignedToId,
-    status,
+export const getServiceOrdersTableDataAction = (): Promise<
+  ServiceOrderTableViewModel[]
+> => {
+  return executeAction({
+    fn: () => serviceOrdersService.getAllForTable(),
+    options: {
+      errorMessage: 'Failed to get service orders table data',
+    },
   });
+};
 
-  revalidatePath(routes.serviceOrders.list);
-  return updatedServiceOrder;
+export const getServiceOrderAction = (
+  id: string,
+): Promise<ServiceOrderDto | null> => {
+  return executeAction({
+    fn: () => serviceOrdersService.get(id),
+    options: {
+      errorMessage: 'Failed to get service order',
+    },
+  });
+};
+
+export const getServiceOrderWithRelationsAction = (
+  id: string,
+): Promise<ServiceOrderWithRelationsDto | null> => {
+  return executeAction({
+    fn: () => serviceOrdersService.getWithRelations(id),
+    options: {
+      errorMessage: 'Failed to get service order with relations',
+    },
+  });
+};
+
+export const getServiceOrderDetailsAction = (
+  id: string,
+): Promise<ServiceOrderDetailsViewModel | null> => {
+  return executeAction({
+    fn: () => serviceOrdersService.getDetails(id),
+    options: {
+      errorMessage: 'Failed to get service order details',
+    },
+  });
+};
+
+export const updateServiceOrderAction = (data: UpdateServiceOrderDto) => {
+  return executeAction({
+    fn: () => serviceOrdersService.update(data.serviceOrderId, data),
+    options: {
+      errorMessage: 'Failed to update service order',
+      revalidatePaths: [routes.serviceOrders.list],
+    },
+  });
 };
